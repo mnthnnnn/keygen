@@ -1,0 +1,7 @@
+node_modules/
+.env
+content.original.js
+content.encrypted.txt
+lovable-license-server/node_modules/
+lovable-license-server/.env
+.DS_Store
