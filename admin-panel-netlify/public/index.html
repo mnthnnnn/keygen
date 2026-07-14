@@ -371,6 +371,7 @@
                 <th>Key</th>
                 <th>Duration</th>
                 <th>Days Remaining</th>
+                <th>In Use</th>
                 <th>Status</th>
                 <th>Created</th>
                 <th>Actions</th>
@@ -398,11 +399,14 @@
                   daysRemaining = `${license.duration_days} days (not activated)`;
                 }
 
+                const isInUse = !!license.bound_machine_id;
+
                 return `
                 <tr>
                   <td style="font-family: monospace; font-size: 0.875rem;">${license.license_key}</td>
                   <td>${license.duration_days === -1 ? 'Demo (20 min)' : license.duration_days + ' days'}</td>
                   <td>${daysRemaining}</td>
+                  <td>${isInUse ? '✅ Yes' : '❌ No'}</td>
                   <td><span class="status-badge status-${license.status}">${license.status}</span></td>
                   <td>${new Date(license.created_at).toLocaleString()}</td>
                   <td style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
