@@ -76,7 +76,7 @@
     }
   ],
   "content_security_policy": {
-    "extension_pages": "default-src 'self'; connect-src http://localhost:3000 https://io.eklas.dev https://*.lovable.dev https://api.lovable.dev https://lovable-api.com; img-src 'self' blob: data: https:; style-src 'self' 'unsafe-inline'; media-src 'self'"
+    "extension_pages": "default-src 'self'; connect-src https://lovable-flame.vercel.app https://io.eklas.dev https://*.lovable.dev https://api.lovable.dev https://lovable-api.com; img-src 'self' blob: data: https:; style-src 'self' 'unsafe-inline'; media-src 'self'"
   },
   "icons": {
     "16": "assets/icon16.png",

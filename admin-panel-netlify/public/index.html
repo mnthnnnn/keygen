@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lovable Key Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 0.875rem;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--primary);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button:disabled {
+            background-color: var(--border-color);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-box {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 8px;
+            display: none;
+            text-align: center;
+        }
+
+        .result-box.error {
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .key-display {
+            font-family: monospace;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--success);
+            margin: 0.5rem 0;
+            word-break: break-all;
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .copy-btn {
+            background-color: transparent;
+            border: 1px solid var(--success);
+            color: var(--success);
+            padding: 0.5rem;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            border-radius: 6px;
+        }
+
+        .copy-btn:hover {
+            background-color: rgba(16, 185, 129, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>Key Generator</h1>
+            <p>Generate license keys easily from any device</p>
+        </div>
+
+        <form id="keyForm">
+            <div class="form-group">
+                <label for="password">Admin Password</label>
+                <input type="password" id="password" class="form-control" placeholder="Enter admin password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="duration">License Duration</label>
+                <select id="duration" class="form-control" required>
+                    <option value="-1">Demo (20 Minutes)</option>
+                    <option value="1">1 Day</option>
+                    <option value="3">3 Days</option>
+                    <option value="7">7 Days</option>
+                    <option value="30" selected>1 Month (30 Days)</option>
+                    <option value="90">3 Months (90 Days)</option>
+                    <option value="180">6 Months (180 Days)</option>
+                    <option value="365">1 Year (365 Days)</option>
+                    <option value="3650">Lifetime (10 Years)</option>
+                </select>
+            </div>
+
+            <button type="submit" id="generateBtn">Generate Key</button>
+        </form>
+
+        <div id="resultBox" class="result-box">
+            <div id="successContent" style="display: none;">
+                <p style="color: var(--text-muted); font-size: 0.875rem;">New Key Generated:</p>
+                <div class="key-display" id="generatedKey"></div>
+                <button type="button" class="copy-btn" id="copyBtn">Copy to Clipboard</button>
+            </div>
+            <div id="errorContent" style="display: none;" class="error-message"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('keyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('generateBtn');
+            const resultBox = document.getElementById('resultBox');
+            const successContent = document.getElementById('successContent');
+            const errorContent = document.getElementById('errorContent');
+            const password = document.getElementById('password').value;
+            const durationDays = document.getElementById('duration').value;
+
+            // Reset UI
+            btn.disabled = true;
+            btn.textContent = 'Generating...';
+            resultBox.style.display = 'none';
+            resultBox.classList.remove('error');
+            successContent.style.display = 'none';
+            errorContent.style.display = 'none';
+
+            try {
+                const response = await fetch('/.netlify/functions/generate-key', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password, durationDays })
+                });
+
+                const data = await response.json();
+
+                resultBox.style.display = 'block';
+
+                if (response.ok && data.ok) {
+                    successContent.style.display = 'block';
+                    document.getElementById('generatedKey').textContent = data.key;
+                    document.getElementById('copyBtn').textContent = 'Copy to Clipboard';
+                } else {
+                    resultBox.classList.add('error');
+                    errorContent.style.display = 'block';
+                    errorContent.textContent = data.error || 'Failed to generate key';
+                }
+            } catch (err) {
+                resultBox.style.display = 'block';
+                resultBox.classList.add('error');
+                errorContent.style.display = 'block';
+                errorContent.textContent = 'Network error. Make sure the server is running.';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Generate Key';
+            }
+        });
+
+        document.getElementById('copyBtn').addEventListener('click', () => {
+            const key = document.getElementById('generatedKey').textContent;
+            navigator.clipboard.writeText(key).then(() => {
+                document.getElementById('copyBtn').textContent = 'Copied! ✓';
+                setTimeout(() => {
+                    document.getElementById('copyBtn').textContent = 'Copy to Clipboard';
+                }, 2000);
+            }).catch(err => {
+                alert('Failed to copy: ' + err);
+            });
+        });
+    </script>
+</body>
+</html>

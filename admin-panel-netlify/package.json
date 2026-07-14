@@ -1,0 +1,8 @@
+{
+  "name": "lovable-admin-panel",
+  "version": "1.0.0",
+  "description": "Admin panel for generating Lovable license keys",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  }
+}

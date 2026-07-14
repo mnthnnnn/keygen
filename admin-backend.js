@@ -155,7 +155,7 @@ bcLX12+2QfP8axSYO5nipG0unE8svZvOUAymW692MPg06yF4iKlP1UiiAg==
 
       // 2. Make network request to your real backend server!
       // In production, change localhost:3000 to your Vercel URL
-      const response = await fetch("http://localhost:3000/api/validate-license", {
+      const response = await fetch("https://lovable-flame.vercel.app/api/validate-license", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
