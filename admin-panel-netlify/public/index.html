@@ -193,7 +193,7 @@
     }
 
     th, td {
-      padding: 0.75rem 1rem;
+      padding: 0.5rem 0.75rem;
       text-align: left;
       border-bottom: 1px solid var(--border-color);
     }
@@ -201,18 +201,18 @@
     th {
       font-weight: 600;
       color: var(--text-muted);
-      font-size: 0.875rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
     }
 
     td {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
 
     .status-badge {
-      padding: 0.25rem 0.5rem;
+      padding: 0.15rem 0.4rem;
       border-radius: 4px;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 600;
       text-transform: uppercase;
     }
@@ -370,10 +370,9 @@
               <tr>
                 <th>Key</th>
                 <th>Duration</th>
-                <th>Days Remaining</th>
+                <th>Remaining</th>
                 <th>In Use</th>
                 <th>Status</th>
-                <th>Created</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -396,26 +395,25 @@
                     daysRemaining = msRemaining > 0 ? `${Math.ceil(msRemaining / (1000 * 60 * 60 * 24))} days` : 'Expired';
                   }
                 } else if (license.duration_days !== -1) {
-                  daysRemaining = `${license.duration_days} days (not activated)`;
+                  daysRemaining = `${license.duration_days} days`;
                 }
 
                 const isInUse = !!license.bound_machine_id;
 
                 return `
                 <tr>
-                  <td style="font-family: monospace; font-size: 0.875rem;">${license.license_key}</td>
-                  <td>${license.duration_days === -1 ? 'Demo (20 min)' : license.duration_days + ' days'}</td>
-                  <td>${daysRemaining}</td>
-                  <td>${isInUse ? '✅ Yes' : '❌ No'}</td>
+                  <td style="font-family: monospace; font-size: 0.8rem;">${license.license_key}</td>
+                  <td style="font-size: 0.85rem;">${license.duration_days === -1 ? 'Demo' : license.duration_days + 'd'}</td>
+                  <td style="font-size: 0.85rem;">${daysRemaining}</td>
+                  <td style="font-size: 0.85rem;">${isInUse ? '✅' : '❌'}</td>
                   <td><span class="status-badge status-${license.status}">${license.status}</span></td>
-                  <td>${new Date(license.created_at).toLocaleString()}</td>
-                  <td style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                  <td style="display: flex; gap: 0.3rem; flex-wrap: wrap;">
                     ${license.status !== 'revoked' && license.status !== 'expired' ? 
-                      `<button class="btn btn-warning btn-sm" onclick="updateKeyStatus('${license.id}', 'revoked')">Pause</button>` :
+                      `<button class="btn btn-warning btn-sm" onclick="updateKeyStatus('${license.id}', 'revoked')" style="font-size: 0.75rem; padding: 0.35rem 0.6rem;">Pause</button>` :
                       license.status === 'revoked' ? 
-                        `<button class="btn btn-success btn-sm" onclick="updateKeyStatus('${license.id}', 'active')">Unpause</button>` : ''
+                        `<button class="btn btn-success btn-sm" onclick="updateKeyStatus('${license.id}', 'active')" style="font-size: 0.75rem; padding: 0.35rem 0.6rem;">Unpause</button>` : ''
                     }
-                    <button class="btn btn-danger btn-sm" onclick="deleteKey('${license.id}', '${license.license_key}')">Delete</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteKey('${license.id}', '${license.license_key}')" style="font-size: 0.75rem; padding: 0.35rem 0.6rem;">Delete</button>
                   </td>
                 </tr>
               `}).join('')}
