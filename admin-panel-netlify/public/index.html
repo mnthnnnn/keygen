@@ -1,273 +1,459 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lovable Key Generator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #6366f1;
-            --primary-hover: #4f46e5;
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: #334155;
-            --success: #10b981;
-            --error: #ef4444;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lovable Key Generator & Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+      --success: #10b981;
+      --error: #ef4444;
+      --warning: #f59e0b;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 1rem;
-        }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      padding: 1rem;
+    }
 
-        .container {
-            background-color: var(--card-bg);
-            border-radius: 16px;
-            padding: 2rem;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--border-color);
-        }
+    .container {
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      padding: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--border-color);
+    }
 
-        .header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
 
-        .header h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #818cf8, #c084fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+    .header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #818cf8, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-        .header p {
-            color: var(--text-muted);
-            font-size: 0.875rem;
-        }
+    .section {
+      margin-bottom: 2rem;
+    }
 
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-main);
+    }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--text-muted);
-        }
+    .form-group {
+      margin-bottom: 1rem;
+    }
 
-        .form-control {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            background-color: var(--bg-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            font-size: 1rem;
-            transition: all 0.2s ease;
-        }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
 
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-        }
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      background-color: var(--bg-color);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      font-size: 1rem;
+      transition: all 0.2s ease;
+    }
 
-        button {
-            width: 100%;
-            padding: 0.875rem;
-            border: none;
-            border-radius: 8px;
-            background-color: var(--primary);
-            color: white;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.1s ease;
-        }
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
 
-        button:hover {
-            background-color: var(--primary-hover);
-        }
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
 
-        button:active {
-            transform: scale(0.98);
-        }
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
 
-        button:disabled {
-            background-color: var(--border-color);
-            cursor: not-allowed;
-            transform: none;
-        }
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
 
-        .result-box {
-            margin-top: 1.5rem;
-            padding: 1rem;
-            background-color: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            border-radius: 8px;
-            display: none;
-            text-align: center;
-        }
+    .btn-success {
+      background-color: var(--success);
+      color: white;
+    }
 
-        .result-box.error {
-            background-color: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-        }
+    .btn-success:hover {
+      opacity: 0.9;
+    }
 
-        .key-display {
-            font-family: monospace;
-            font-size: 1.125rem;
-            font-weight: 700;
-            color: var(--success);
-            margin: 0.5rem 0;
-            word-break: break-all;
-        }
+    .btn-warning {
+      background-color: var(--warning);
+      color: white;
+    }
 
-        .error-message {
-            color: var(--error);
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
+    .btn-warning:hover {
+      opacity: 0.9;
+    }
 
-        .copy-btn {
-            background-color: transparent;
-            border: 1px solid var(--success);
-            color: var(--success);
-            padding: 0.5rem;
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
-            border-radius: 6px;
-        }
+    .btn-sm {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+    }
 
-        .copy-btn:hover {
-            background-color: rgba(16, 185, 129, 0.1);
-        }
-    </style>
+    .btn-group {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .result-box {
+      margin-top: 1rem;
+      padding: 1rem;
+      background-color: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 8px;
+      display: none;
+    }
+
+    .result-box.error {
+      background-color: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.2);
+    }
+
+    .key-display {
+      font-family: monospace;
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--success);
+      margin: 0.5rem 0;
+      word-break: break-all;
+    }
+
+    .error-message {
+      color: var(--error);
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .keys-table-container {
+      margin-top: 1rem;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      font-weight: 600;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      text-transform: uppercase;
+    }
+
+    td {
+      font-size: 0.9rem;
+    }
+
+    .status-badge {
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .status-active {
+      background-color: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+    }
+
+    .status-revoked {
+      background-color: rgba(239, 68, 68, 0.2);
+      color: var(--error);
+    }
+
+    .status-expired {
+      background-color: rgba(100, 116, 139, 0.2);
+      color: var(--text-muted);
+    }
+  </style>
 </head>
 <body>
-
-    <div class="container">
-        <div class="header">
-            <h1>Key Generator</h1>
-            <p>Generate license keys easily from any device</p>
-        </div>
-
-        <form id="keyForm">
-            <div class="form-group">
-                <label for="password">Admin Password</label>
-                <input type="password" id="password" class="form-control" placeholder="Enter admin password" required>
-            </div>
-
-            <div class="form-group">
-                <label for="duration">License Duration</label>
-                <select id="duration" class="form-control" required>
-                    <option value="-1">Demo (20 Minutes)</option>
-                    <option value="1">1 Day</option>
-                    <option value="3">3 Days</option>
-                    <option value="7">7 Days</option>
-                    <option value="30" selected>1 Month (30 Days)</option>
-                    <option value="90">3 Months (90 Days)</option>
-                    <option value="180">6 Months (180 Days)</option>
-                    <option value="365">1 Year (365 Days)</option>
-                    <option value="3650">Lifetime (10 Years)</option>
-                </select>
-            </div>
-
-            <button type="submit" id="generateBtn">Generate Key</button>
-        </form>
-
-        <div id="resultBox" class="result-box">
-            <div id="successContent" style="display: none;">
-                <p style="color: var(--text-muted); font-size: 0.875rem;">New Key Generated:</p>
-                <div class="key-display" id="generatedKey"></div>
-                <button type="button" class="copy-btn" id="copyBtn">Copy to Clipboard</button>
-            </div>
-            <div id="errorContent" style="display: none;" class="error-message"></div>
-        </div>
+  <div class="container">
+    <div class="header">
+      <h1>Key Generator & Manager</h1>
     </div>
 
-    <script>
-        document.getElementById('keyForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const btn = document.getElementById('generateBtn');
-            const resultBox = document.getElementById('resultBox');
-            const successContent = document.getElementById('successContent');
-            const errorContent = document.getElementById('errorContent');
-            const password = document.getElementById('password').value;
-            const durationDays = document.getElementById('duration').value;
+    <!-- Generate Key Section -->
+    <div class="section">
+      <h2 class="section-title">Generate New Key</h2>
+      <div class="form-group">
+        <label for="password">Admin Password</label>
+        <input type="password" id="password" class="form-control" placeholder="Enter admin password" required>
+      </div>
+      <div class="form-group">
+        <label for="duration">License Duration</label>
+        <select id="duration" class="form-control" required>
+          <option value="-1">Demo (20 Minutes)</option>
+          <option value="1">1 Day</option>
+          <option value="3">3 Days</option>
+          <option value="7">7 Days</option>
+          <option value="30" selected>1 Month (30 Days)</option>
+          <option value="90">3 Months (90 Days)</option>
+          <option value="180">6 Months (180 Days)</option>
+          <option value="365">1 Year (365 Days)</option>
+          <option value="3650">Lifetime (10 Years)</option>
+        </select>
+      </div>
+      <div class="btn-group">
+        <button type="button" id="generateBtn" class="btn btn-primary">Generate Key</button>
+        <button type="button" id="refreshBtn" class="btn btn-primary">Refresh List</button>
+      </div>
+      <div id="resultBox" class="result-box">
+        <div id="successContent" style="display: none;">
+          <p style="color: var(--text-muted); font-size: 0.875rem;">New Key Generated:</p>
+          <div class="key-display" id="generatedKey"></div>
+          <button type="button" class="btn btn-success btn-sm" id="copyBtn">Copy to Clipboard</button>
+        </div>
+        <div id="errorContent" style="display: none;" class="error-message"></div>
+      </div>
+    </div>
 
-            // Reset UI
-            btn.disabled = true;
-            btn.textContent = 'Generating...';
-            resultBox.style.display = 'none';
-            resultBox.classList.remove('error');
-            successContent.style.display = 'none';
-            errorContent.style.display = 'none';
+    <!-- Keys List Section -->
+    <div class="section">
+      <h2 class="section-title">All License Keys</h2>
+      <div id="keysList"></div>
+    </div>
+  </div>
 
-            try {
-                const response = await fetch('/.netlify/functions/generate-key', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password, durationDays })
-                });
+  <script>
+    const passwordInput = document.getElementById('password');
+    const durationSelect = document.getElementById('duration');
+    const generateBtn = document.getElementById('generateBtn');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const resultBox = document.getElementById('resultBox');
+    const successContent = document.getElementById('successContent');
+    const errorContent = document.getElementById('errorContent');
+    const generatedKeyEl = document.getElementById('generatedKey');
+    const copyBtn = document.getElementById('copyBtn');
+    const keysListEl = document.getElementById('keysList');
 
-                const data = await response.json();
+    async function generateKey() {
+      const password = passwordInput.value;
+      const durationDays = durationSelect.value;
 
-                resultBox.style.display = 'block';
+      if (!password) {
+        showError('Please enter admin password');
+        return;
+      }
 
-                if (response.ok && data.ok) {
-                    successContent.style.display = 'block';
-                    document.getElementById('generatedKey').textContent = data.key;
-                    document.getElementById('copyBtn').textContent = 'Copy to Clipboard';
-                } else {
-                    resultBox.classList.add('error');
-                    errorContent.style.display = 'block';
-                    errorContent.textContent = data.error || 'Failed to generate key';
-                }
-            } catch (err) {
-                resultBox.style.display = 'block';
-                resultBox.classList.add('error');
-                errorContent.style.display = 'block';
-                errorContent.textContent = 'Network error. Make sure the server is running.';
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Generate Key';
-            }
+      generateBtn.disabled = true;
+      generateBtn.textContent = 'Generating...';
+      hideResult();
+
+      try {
+        const response = await fetch('/.netlify/functions/generate-key', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password, durationDays })
         });
 
-        document.getElementById('copyBtn').addEventListener('click', () => {
-            const key = document.getElementById('generatedKey').textContent;
-            navigator.clipboard.writeText(key).then(() => {
-                document.getElementById('copyBtn').textContent = 'Copied! ✓';
-                setTimeout(() => {
-                    document.getElementById('copyBtn').textContent = 'Copy to Clipboard';
-                }, 2000);
-            }).catch(err => {
-                alert('Failed to copy: ' + err);
-            });
+        const data = await response.json();
+
+        if (response.ok && data.ok) {
+          showSuccess(data.key);
+          await listKeys();
+        } else {
+          showError(data.error || 'Failed to generate key');
+        }
+      } catch (err) {
+        showError('Network error. Please try again.');
+      } finally {
+        generateBtn.disabled = false;
+        generateBtn.textContent = 'Generate Key';
+      }
+    }
+
+    async function listKeys() {
+      const password = passwordInput.value;
+
+      if (!password) {
+        return;
+      }
+
+      keysListEl.innerHTML = '<p style="color: var(--text-muted);">Loading keys...</p>';
+
+      try {
+        const response = await fetch('/.netlify/functions/list-keys', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password })
         });
-    </script>
+
+        const data = await response.json();
+
+        if (response.ok && data.ok) {
+          renderKeys(data.licenses);
+        } else {
+          keysListEl.innerHTML = `<p class="error-message">${data.error || 'Failed to load keys'}</p>`;
+        }
+      } catch (err) {
+        keysListEl.innerHTML = '<p class="error-message">Network error. Please try again.</p>';
+      }
+    }
+
+    function renderKeys(licenses) {
+      if (!licenses.length) {
+        keysListEl.innerHTML = '<p style="color: var(--text-muted);">No keys found.</p>';
+        return;
+      }
+
+      const tableHtml = `
+        <div class="keys-table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Duration</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${licenses.map(license => `
+                <tr>
+                  <td style="font-family: monospace; font-size: 0.875rem;">${license.license_key}</td>
+                  <td>${license.duration_days === -1 ? 'Demo (20 min)' : license.duration_days + ' days'}</td>
+                  <td><span class="status-badge status-${license.status}">${license.status}</span></td>
+                  <td>${new Date(license.created_at).toLocaleString()}</td>
+                  <td>
+                    ${license.status !== 'revoked' && license.status !== 'expired' ? 
+                      `<button class="btn btn-warning btn-sm" onclick="updateKeyStatus('${license.id}', 'revoked')">Revoke</button>` :
+                      license.status === 'revoked' ? 
+                        `<button class="btn btn-success btn-sm" onclick="updateKeyStatus('${license.id}', 'active')">Reactivate</button>` : ''
+                    }
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      keysListEl.innerHTML = tableHtml;
+    }
+
+    window.updateKeyStatus = async function(licenseId, newStatus) {
+      const password = passwordInput.value;
+
+      if (!password) {
+        alert('Please enter admin password first');
+        return;
+      }
+
+      try {
+        const response = await fetch('/.netlify/functions/update-key-status', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password, licenseId, newStatus })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.ok) {
+          await listKeys();
+        } else {
+          alert(data.error || 'Failed to update key status');
+        }
+      } catch (err) {
+        alert('Network error. Please try again.');
+      }
+    };
+
+    function showSuccess(key) {
+      resultBox.style.display = 'block';
+      resultBox.classList.remove('error');
+      successContent.style.display = 'block';
+      errorContent.style.display = 'none';
+      generatedKeyEl.textContent = key;
+    }
+
+    function showError(message) {
+      resultBox.style.display = 'block';
+      resultBox.classList.add('error');
+      successContent.style.display = 'none';
+      errorContent.style.display = 'block';
+      errorContent.textContent = message;
+    }
+
+    function hideResult() {
+      resultBox.style.display = 'none';
+    }
+
+    copyBtn.addEventListener('click', () => {
+      const key = generatedKeyEl.textContent;
+      navigator.clipboard.writeText(key).then(() => {
+        copyBtn.textContent = 'Copied! ✓';
+        setTimeout(() => {
+          copyBtn.textContent = 'Copy to Clipboard';
+        }, 2000);
+      }).catch(err => {
+        alert('Failed to copy: ' + err);
+      });
+    });
+
+    generateBtn.addEventListener('click', generateKey);
+    refreshBtn.addEventListener('click', listKeys);
+
+    // Auto-load keys on page load if password is saved (optional, but we'll just show placeholder)
+    keysListEl.innerHTML = '<p style="color: var(--text-muted);">Enter admin password and click Refresh List to see keys</p>';
+  </script>
 </body>
 </html>
