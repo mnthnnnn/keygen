@@ -579,6 +579,23 @@
         const data = await response.json();
         if (response.ok && data.ok) {
           globalLicenses = data.licenses || [];
+
+          // Auto-remove expired keys
+          const expiredIds = globalLicenses.filter(l => getKeyInfo(l).status === 'expired').map(l => l.id);
+          if (expiredIds.length > 0) {
+            try {
+              await fetch('/.netlify/functions/delete-inactive-keys', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: currentPassword, ids: expiredIds })
+              });
+              // Remove them from local state
+              globalLicenses = globalLicenses.filter(l => !expiredIds.includes(l.id));
+              console.log(`Auto-removed ${expiredIds.length} expired keys.`);
+            } catch (e) {
+              console.error("Failed to auto-remove expired keys", e);
+            }
+          }
+
           updateDashboardStats();
           renderKeysTable();
         } else {

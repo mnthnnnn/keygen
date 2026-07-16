@@ -90,11 +90,9 @@ app.post('/api/validate-license', async (req, res) => {
     const now = Date.now();
 
     if (now > expiresAt) {
-      // Auto-update status to expired if it just expired
-      if (license.status !== 'expired') {
-        await supabase.from('licenses').update({ status: 'expired' }).eq('id', license.id);
-      }
-      return res.status(403).json({ ok: false, error: `This ${planName} has expired.` });
+      // Auto-delete if it just expired
+      await supabase.from('licenses').delete().eq('id', license.id);
+      return res.status(403).json({ ok: false, error: `This ${planName} has expired and has been removed.` });
     }
     
     // Only update if there's something to update (like binding a new machine)
