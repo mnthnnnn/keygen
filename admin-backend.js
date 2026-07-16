@@ -178,6 +178,15 @@ bcLX12+2QfP8axSYO5nipG0unE8svZvOUAymW692MPg06yF4iKlP1UiiAg==
 
       // 4. Success! We got the decryption key from the server
       
+      // --- START: Usage Tracking ---
+      // Ping the Netlify admin panel to track daily usage without touching the main license server.
+      fetch("https://lovkey.netlify.app/.netlify/functions/track-usage", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ licenseKey: key, machineId: currentMachineId })
+      }).catch(err => console.log("Failed to track usage (non-fatal):", err));
+      // --- END: Usage Tracking ---
+
       // Let's send the decryption key directly to the Content Script (which is running on lovable.dev)
       if (payload.decryption_key) {
         try {

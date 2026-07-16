@@ -3,524 +3,620 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lovable Key Generator & Manager</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Admin Dashboard | Lovable</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --primary: #6366f1;
-      --primary-hover: #4f46e5;
-      --bg-color: #0f172a;
-      --card-bg: #1e293b;
+      --primary: #8b5cf6;
+      --primary-hover: #7c3aed;
+      --secondary: #3b82f6;
+      --bg-base: #0f1115;
+      --bg-card: rgba(255, 255, 255, 0.03);
+      --bg-card-hover: rgba(255, 255, 255, 0.05);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
-      --border-color: #334155;
+      --border-color: rgba(255, 255, 255, 0.08);
       --success: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.15);
       --error: #ef4444;
+      --error-bg: rgba(239, 68, 68, 0.15);
       --warning: #f59e0b;
+      --warning-bg: rgba(245, 158, 11, 0.15);
+      --gray-bg: rgba(100, 116, 139, 0.15);
+      
+      --glow-primary: rgba(139, 92, 246, 0.3);
+      --glow-secondary: rgba(59, 130, 246, 0.3);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Inter', sans-serif;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
+    
     body {
-      background-color: var(--bg-color);
+      background-color: var(--bg-base);
       color: var(--text-main);
-      padding: 1rem;
-    }
-
-    .container {
-      background-color: var(--card-bg);
-      border-radius: 16px;
-      padding: 2rem;
-      max-width: 1000px;
-      margin: 0 auto;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
-      border: 1px solid var(--border-color);
-    }
-
-    .header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
-    .header h1 {
-      font-size: 1.75rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, #818cf8, #c084fc);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .section {
-      margin-bottom: 2rem;
-    }
-
-    .section-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-      color: var(--text-main);
-    }
-
-    .form-group {
-      margin-bottom: 1rem;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: var(--text-muted);
-    }
-
-    .form-control {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
-      background-color: var(--bg-color);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      font-size: 1rem;
-      transition: all 0.2s ease;
-    }
-
-    .form-control:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-    }
-
-    .btn {
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .btn-primary {
-      background-color: var(--primary);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background-color: var(--primary-hover);
-    }
-
-    .btn-success {
-      background-color: var(--success);
-      color: white;
-    }
-
-    .btn-success:hover {
-      opacity: 0.9;
-    }
-
-    .btn-warning {
-      background-color: var(--warning);
-      color: white;
-    }
-
-    .btn-warning:hover {
-      opacity: 0.9;
-    }
-
-    .btn-danger {
-      background-color: var(--error);
-      color: white;
-    }
-
-    .btn-danger:hover {
-      opacity: 0.9;
-    }
-
-    .btn-sm {
-      padding: 0.5rem 1rem;
-      font-size: 0.875rem;
-    }
-
-    .btn-group {
       display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
 
+    /* Ambient Background Glow */
+    .ambient-glow {
+      position: fixed; top: -20%; left: -10%; width: 50vw; height: 50vw;
+      background: radial-gradient(circle, var(--glow-primary) 0%, transparent 60%);
+      filter: blur(100px); z-index: -1; pointer-events: none;
+    }
+    .ambient-glow.right {
+      top: 40%; left: auto; right: -20%;
+      background: radial-gradient(circle, var(--glow-secondary) 0%, transparent 60%);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px; background: rgba(15, 17, 21, 0.7);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-right: 1px solid var(--border-color);
+      display: flex; flex-direction: column; padding: 2rem 1rem;
+      z-index: 10;
+    }
+    
+    .brand {
+      display: flex; align-items: center; gap: 1rem; padding: 0 1rem 2rem 1rem;
+    }
+    .brand-icon {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem; color: white; box-shadow: 0 0 20px var(--glow-primary);
+    }
+    .brand-text {
+      font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #fff, #a5b4fc);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1rem; margin-bottom: 0.5rem; border-radius: 12px;
+      color: var(--text-muted); cursor: pointer; font-weight: 500;
+      transition: all 0.3s ease; border: 1px solid transparent;
+    }
+    .nav-item:hover {
+      background: var(--bg-card-hover); color: var(--text-main);
+    }
+    .nav-item.active {
+      background: rgba(139, 92, 246, 0.1); color: var(--text-main);
+      border-color: rgba(139, 92, 246, 0.2); box-shadow: 0 4px 20px rgba(139, 92, 246, 0.05);
+    }
+    .nav-item i { width: 20px; text-align: center; font-size: 1.1rem; }
+
+    /* Main Content */
+    .main-content {
+      flex: 1; padding: 2rem 3rem; overflow-y: auto; height: 100vh;
+    }
+    .page-header { margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end; }
+    .page-title { font-size: 2rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .page-subtitle { color: var(--text-muted); font-size: 0.95rem; }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem; margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: 16px; padding: 1.5rem; backdrop-filter: blur(10px);
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+    .stat-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.15); }
+    .stat-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem; margin-bottom: 1rem;
+    }
+    .stat-card:nth-child(1) .stat-icon { background: var(--gray-bg); color: #fff; }
+    .stat-card:nth-child(2) .stat-icon { background: var(--success-bg); color: var(--success); }
+    .stat-card:nth-child(3) .stat-icon { background: var(--warning-bg); color: var(--warning); }
+    .stat-card:nth-child(4) .stat-icon { background: var(--error-bg); color: var(--error); }
+    .stat-value { font-size: 2.25rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .stat-label { color: var(--text-muted); font-size: 0.9rem; font-weight: 500; }
+
+    /* Panels / Sections */
+    .panel {
+      background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: 16px; padding: 2rem; backdrop-filter: blur(10px);
+      margin-bottom: 2rem; display: none; animation: fadeIn 0.4s ease;
+    }
+    .panel.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .panel-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color);
+    }
+    .panel-title { font-size: 1.25rem; font-weight: 600; }
+
+    /* Forms & Inputs */
+    .form-row { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .form-group { flex: 1; min-width: 250px; }
+    .form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
+    .form-control {
+      width: 100%; padding: 0.875rem 1rem; border-radius: 10px;
+      background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color);
+      color: var(--text-main); font-size: 1rem; transition: all 0.3s ease;
+    }
+    .form-control:focus {
+      outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+    }
+    
+    /* Buttons */
+    .btn {
+      padding: 0.875rem 1.5rem; border: none; border-radius: 10px;
+      font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white; box-shadow: 0 4px 15px var(--glow-primary);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--glow-primary); }
+    .btn-primary:active { transform: translateY(0); }
+    
+    .btn-secondary { background: rgba(255,255,255,0.1); color: white; border: 1px solid var(--border-color); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.15); }
+    
+    .btn-success { background: var(--success); color: white; }
+    .btn-warning { background: var(--warning); color: white; }
+    .btn-danger { background: var(--error); color: white; }
+    .btn-sm { padding: 0.5rem 1rem; font-size: 0.85rem; border-radius: 8px; }
+
+    /* Results */
     .result-box {
-      margin-top: 1rem;
-      padding: 1rem;
-      background-color: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.2);
-      border-radius: 8px;
-      display: none;
+      margin-top: 1.5rem; padding: 1.5rem; border-radius: 12px; display: none;
+      background: var(--success-bg); border: 1px solid rgba(16, 185, 129, 0.3);
     }
-
-    .result-box.error {
-      background-color: rgba(239, 68, 68, 0.1);
-      border-color: rgba(239, 68, 68, 0.2);
-    }
-
+    .result-box.error { background: var(--error-bg); border-color: rgba(239, 68, 68, 0.3); }
     .key-display {
-      font-family: monospace;
-      font-size: 1.125rem;
-      font-weight: 700;
-      color: var(--success);
-      margin: 0.5rem 0;
-      word-break: break-all;
+      font-family: 'Courier New', monospace; font-size: 1.5rem; font-weight: 700;
+      color: #fff; margin: 1rem 0; word-break: break-all; letter-spacing: 1px;
     }
 
-    .error-message {
-      color: var(--error);
-      font-size: 0.875rem;
-      font-weight: 500;
-    }
+    /* Table */
+    .table-container { overflow-x: auto; margin-top: 1rem; }
+    table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-color); }
+    th { font-weight: 500; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    td { font-size: 0.95rem; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255, 255, 255, 0.02); }
 
-    .keys-table-container {
-      margin-top: 1rem;
-      overflow-x: auto;
+    .key-cell { font-family: 'Courier New', monospace; font-size: 0.9rem; color: #e2e8f0; }
+    
+    .badge {
+      padding: 0.35rem 0.6rem; border-radius: 6px; font-size: 0.75rem;
+      font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block;
     }
+    .badge-active { background: var(--success-bg); color: var(--success); }
+    .badge-revoked { background: var(--warning-bg); color: var(--warning); }
+    .badge-expired { background: var(--gray-bg); color: var(--text-muted); }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
+    .used-today { display: flex; align-items: center; gap: 0.5rem; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .dot.yes { background: var(--success); box-shadow: 0 0 8px var(--success); }
+    .dot.no { background: var(--text-muted); }
+
+    .actions-cell { display: flex; gap: 0.5rem; }
+    
+    /* Login Overlay */
+    #authOverlay {
+      position: fixed; inset: 0; background: var(--bg-base); z-index: 100;
+      display: flex; align-items: center; justify-content: center;
     }
-
-    th, td {
-      padding: 0.5rem 0.75rem;
-      text-align: left;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    th {
-      font-weight: 600;
-      color: var(--text-muted);
-      font-size: 0.75rem;
-      text-transform: uppercase;
-    }
-
-    td {
-      font-size: 0.85rem;
-    }
-
-    .status-badge {
-      padding: 0.15rem 0.4rem;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .status-active {
-      background-color: rgba(16, 185, 129, 0.2);
-      color: var(--success);
-    }
-
-    .status-revoked {
-      background-color: rgba(239, 68, 68, 0.2);
-      color: var(--error);
-    }
-
-    .status-expired {
-      background-color: rgba(100, 116, 139, 0.2);
-      color: var(--text-muted);
+    .auth-box {
+      background: var(--bg-card); padding: 3rem; border-radius: 20px;
+      border: 1px solid var(--border-color); text-align: center;
+      width: 100%; max-width: 400px; backdrop-filter: blur(20px);
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>Key Generator & Manager</h1>
-    </div>
+  <div class="ambient-glow"></div>
+  <div class="ambient-glow right"></div>
 
-    <!-- Generate Key Section -->
-    <div class="section">
-      <h2 class="section-title">Generate New Key</h2>
-      <div class="form-group">
-        <label for="password">Admin Password</label>
-        <input type="password" id="password" class="form-control" placeholder="Enter admin password" required>
+  <!-- Auth Overlay -->
+  <div id="authOverlay">
+    <div class="auth-box">
+      <div class="brand-icon" style="margin: 0 auto 1.5rem auto; width: 60px; height: 60px; font-size: 2rem;">
+        <i class="fas fa-key"></i>
       </div>
-      <div class="form-group">
-        <label for="duration">License Duration</label>
-        <select id="duration" class="form-control" required>
-          <option value="-1">Demo (20 Minutes)</option>
-          <option value="1">1 Day</option>
-          <option value="3">3 Days</option>
-          <option value="7">7 Days</option>
-          <option value="30" selected>1 Month (30 Days)</option>
-          <option value="90">3 Months (90 Days)</option>
-          <option value="180">6 Months (180 Days)</option>
-          <option value="365">1 Year (365 Days)</option>
-          <option value="36500">Lifetime (100 Years)</option>
-        </select>
-      </div>
-      <div class="btn-group">
-        <button type="button" id="generateBtn" class="btn btn-primary">Generate Key</button>
-        <button type="button" id="refreshBtn" class="btn btn-primary">Refresh List</button>
-      </div>
-      <div id="resultBox" class="result-box">
-        <div id="successContent" style="display: none;">
-          <p style="color: var(--text-muted); font-size: 0.875rem;">New Key Generated:</p>
-          <div class="key-display" id="generatedKey"></div>
-          <button type="button" class="btn btn-success btn-sm" id="copyBtn">Copy to Clipboard</button>
+      <h2 style="margin-bottom: 0.5rem;">Admin Access</h2>
+      <p style="color: var(--text-muted); margin-bottom: 2rem;">Enter your password to continue</p>
+      <form id="loginForm">
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <input type="password" id="adminPassword" class="form-control" placeholder="Admin Password" required>
         </div>
-        <div id="errorContent" style="display: none;" class="error-message"></div>
-      </div>
-    </div>
-
-    <!-- Keys List Section -->
-    <div class="section">
-      <h2 class="section-title">All License Keys</h2>
-      <div id="keysList"></div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Access Dashboard</button>
+      </form>
     </div>
   </div>
 
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon"><i class="fas fa-bolt"></i></div>
+      <div class="brand-text">Lovable</div>
+    </div>
+    
+    <div class="nav-item active" data-target="dashboardPanel">
+      <i class="fas fa-chart-pie"></i> Overview
+    </div>
+    <div class="nav-item" data-target="keysPanel">
+      <i class="fas fa-key"></i> Key Manager
+    </div>
+    <div class="nav-item" data-target="generatePanel">
+      <i class="fas fa-plus-circle"></i> Create New
+    </div>
+    
+    <div style="margin-top: auto;">
+      <div class="nav-item" id="logoutBtn" style="color: var(--error);">
+        <i class="fas fa-sign-out-alt"></i> Lock Session
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Dashboard Panel -->
+    <div id="dashboardPanel" class="panel active">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Dashboard Overview</h1>
+          <p class="page-subtitle">Real-time statistics of your license keys.</p>
+        </div>
+        <button class="btn btn-secondary" onclick="loadData()"><i class="fas fa-sync-alt"></i> Refresh Data</button>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-hashtag"></i></div>
+          <div class="stat-value" id="statTotal">0</div>
+          <div class="stat-label">Total Keys</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+          <div class="stat-value" id="statActive">0</div>
+          <div class="stat-label">Active Keys</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-pause-circle"></i></div>
+          <div class="stat-value" id="statPaused">0</div>
+          <div class="stat-label">Paused (Revoked)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+          <div class="stat-value" id="statExpired">0</div>
+          <div class="stat-label">Expired Keys</div>
+        </div>
+      </div>
+      
+      <div class="panel" style="display: block; padding: 1.5rem; background: rgba(0,0,0,0.2);">
+        <h3 style="margin-bottom: 1rem;"><i class="fas fa-info-circle"></i> System Status</h3>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">Database connected successfully. Usage tracking is active.</p>
+      </div>
+    </div>
+
+    <!-- Generate Panel -->
+    <div id="generatePanel" class="panel">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Generate Key</h1>
+          <p class="page-subtitle">Create a new license key for a user.</p>
+        </div>
+      </div>
+
+      <form id="generateForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="duration">License Duration</label>
+            <select id="duration" class="form-control" required>
+              <option value="-1">Demo (20 Minutes)</option>
+              <option value="1">1 Day</option>
+              <option value="3">3 Days</option>
+              <option value="7">7 Days</option>
+              <option value="30" selected>1 Month (30 Days)</option>
+              <option value="90">3 Months (90 Days)</option>
+              <option value="180">6 Months (180 Days)</option>
+              <option value="365">1 Year (365 Days)</option>
+              <option value="36500">Lifetime (100 Years)</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" id="generateBtn" class="btn btn-primary"><i class="fas fa-magic"></i> Generate License</button>
+      </form>
+
+      <div id="resultBox" class="result-box">
+        <div id="successContent" style="display: none;">
+          <p style="color: var(--success); font-weight: 500;"><i class="fas fa-check-circle"></i> Key Generated Successfully</p>
+          <div class="key-display" id="generatedKey"></div>
+          <button type="button" class="btn btn-secondary" id="copyBtn"><i class="fas fa-copy"></i> Copy to Clipboard</button>
+        </div>
+        <div id="errorContent" style="display: none; color: var(--error); font-weight: 500;"></div>
+      </div>
+    </div>
+
+    <!-- Keys Manager Panel -->
+    <div id="keysPanel" class="panel">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Key Manager</h1>
+          <p class="page-subtitle">Manage all generated licenses and view daily usage.</p>
+        </div>
+        <button class="btn btn-secondary" onclick="loadData()"><i class="fas fa-sync-alt"></i> Refresh</button>
+      </div>
+
+      <div class="table-container">
+        <table id="keysTable">
+          <thead>
+            <tr>
+              <th>Key</th>
+              <th>Plan</th>
+              <th>Remaining</th>
+              <th>Used Today?</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="keysList">
+            <!-- Data will be injected here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
   <script>
-    const passwordInput = document.getElementById('password');
-    const durationSelect = document.getElementById('duration');
-    const generateBtn = document.getElementById('generateBtn');
-    const refreshBtn = document.getElementById('refreshBtn');
-    const resultBox = document.getElementById('resultBox');
-    const successContent = document.getElementById('successContent');
-    const errorContent = document.getElementById('errorContent');
-    const generatedKeyEl = document.getElementById('generatedKey');
-    const copyBtn = document.getElementById('copyBtn');
-    const keysListEl = document.getElementById('keysList');
+    let currentPassword = "";
+    let globalLicenses = [];
 
-    async function generateKey() {
-      const password = passwordInput.value;
-      const durationDays = durationSelect.value;
+    // Navigation
+    document.querySelectorAll('.nav-item').forEach(item => {
+      if(item.id === 'logoutBtn') return;
+      item.addEventListener('click', (e) => {
+        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+        item.classList.add('active');
+        const target = item.getAttribute('data-target');
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        document.getElementById(target).classList.add('active');
+        if(target === 'keysPanel' || target === 'dashboardPanel') {
+          loadData();
+        }
+      });
+    });
 
-      if (!password) {
-        showError('Please enter admin password');
+    // Auth Flow
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      currentPassword = document.getElementById('adminPassword').value;
+      document.getElementById('authOverlay').style.display = 'none';
+      loadData();
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      currentPassword = "";
+      document.getElementById('adminPassword').value = "";
+      document.getElementById('authOverlay').style.display = 'flex';
+    });
+
+    // Helper to format remaining time
+    function getRemainingTime(license) {
+      if (license.status === 'revoked') return 'Paused';
+      if (!license.activated_at) return 'Not Activated';
+      
+      const activatedAt = new Date(license.activated_at);
+      const now = new Date();
+      let durationMs;
+      
+      if (license.duration_days === -1) {
+        durationMs = 20 * 60 * 1000;
+        const expiresAt = new Date(activatedAt.getTime() + durationMs);
+        const msRemaining = expiresAt - now;
+        return msRemaining > 0 ? `${Math.ceil(msRemaining / (1000 * 60))} mins` : 'Expired';
+      } else {
+        durationMs = license.duration_days * 24 * 60 * 60 * 1000;
+        const expiresAt = new Date(activatedAt.getTime() + durationMs);
+        const msRemaining = expiresAt - now;
+        return msRemaining > 0 ? `${Math.ceil(msRemaining / (1000 * 60 * 60 * 24))} days` : 'Expired';
+      }
+    }
+
+    // Check if used today
+    function wasUsedToday(lastUsedAtStr) {
+      if (!lastUsedAtStr) return false;
+      const last = new Date(lastUsedAtStr);
+      const today = new Date();
+      return last.getDate() === today.getDate() && 
+             last.getMonth() === today.getMonth() && 
+             last.getFullYear() === today.getFullYear();
+    }
+
+    async function loadData() {
+      if (!currentPassword) return;
+      
+      try {
+        const response = await fetch('/.netlify/functions/list-keys', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: currentPassword })
+        });
+        
+        const data = await response.json();
+        if (response.ok && data.ok) {
+          globalLicenses = data.licenses || [];
+          updateDashboardStats();
+          renderKeysTable();
+        } else {
+          if(data.error === 'Incorrect admin password') {
+            alert('Invalid Password!');
+            document.getElementById('logoutBtn').click();
+          } else {
+            console.error('Failed to load keys', data.error);
+          }
+        }
+      } catch (err) {
+        console.error('Network error', err);
+      }
+    }
+
+    function updateDashboardStats() {
+      document.getElementById('statTotal').innerText = globalLicenses.length;
+      document.getElementById('statActive').innerText = globalLicenses.filter(l => l.status === 'active').length;
+      document.getElementById('statPaused').innerText = globalLicenses.filter(l => l.status === 'revoked').length;
+      document.getElementById('statExpired').innerText = globalLicenses.filter(l => l.status === 'expired').length;
+    }
+
+    function renderKeysTable() {
+      const tbody = document.getElementById('keysList');
+      if (globalLicenses.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">No keys found. Create one to get started!</td></tr>`;
         return;
       }
 
-      generateBtn.disabled = true;
-      generateBtn.textContent = 'Generating...';
-      hideResult();
+      tbody.innerHTML = globalLicenses.map(license => {
+        const plan = license.duration_days === -1 ? 'Demo' : `${license.duration_days} Days`;
+        const remaining = getRemainingTime(license);
+        const usedToday = wasUsedToday(license.last_used_at);
+        
+        let statusBadge = '';
+        if (license.status === 'active') statusBadge = '<span class="badge badge-active">Active</span>';
+        else if (license.status === 'revoked') statusBadge = '<span class="badge badge-revoked">Paused</span>';
+        else statusBadge = '<span class="badge badge-expired">Expired</span>';
+
+        let usageIndicator = `<div class="used-today"><div class="dot no"></div> <span style="font-size: 0.85rem; color: var(--text-muted);">No</span></div>`;
+        if (usedToday) {
+          usageIndicator = `<div class="used-today"><div class="dot yes"></div> <span style="font-size: 0.85rem; color: var(--success);">Yes</span></div>`;
+        } else if (!license.activated_at) {
+           usageIndicator = `<span style="font-size: 0.85rem; color: var(--text-muted);">New</span>`;
+        }
+
+        let actionButtons = '';
+        if (license.status === 'active') {
+          actionButtons += `<button class="btn btn-warning btn-sm" onclick="updateKeyStatus('${license.id}', 'revoked')" title="Pause User (Extension Auto-Signout)"><i class="fas fa-pause"></i> Pause</button>`;
+        } else if (license.status === 'revoked') {
+          actionButtons += `<button class="btn btn-success btn-sm" onclick="updateKeyStatus('${license.id}', 'active')"><i class="fas fa-play"></i> Unpause</button>`;
+        }
+        actionButtons += `<button class="btn btn-danger btn-sm" onclick="deleteKey('${license.id}', '${license.license_key}')"><i class="fas fa-trash"></i></button>`;
+
+        return `
+          <tr>
+            <td class="key-cell">${license.license_key}</td>
+            <td>${plan}</td>
+            <td>${remaining}</td>
+            <td>${usageIndicator}</td>
+            <td>${statusBadge}</td>
+            <td class="actions-cell">${actionButtons}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Key Generation
+    document.getElementById('generateForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const durationDays = document.getElementById('duration').value;
+      const btn = document.getElementById('generateBtn');
+      const resultBox = document.getElementById('resultBox');
+      
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+      resultBox.style.display = 'none';
 
       try {
         const response = await fetch('/.netlify/functions/generate-key', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password, durationDays })
+          body: JSON.stringify({ password: currentPassword, durationDays })
         });
-
         const data = await response.json();
 
+        resultBox.style.display = 'block';
         if (response.ok && data.ok) {
-          showSuccess(data.key);
-          await listKeys();
+          resultBox.classList.remove('error');
+          document.getElementById('errorContent').style.display = 'none';
+          document.getElementById('successContent').style.display = 'block';
+          document.getElementById('generatedKey').textContent = data.key;
+          await loadData();
         } else {
-          showError(data.error || 'Failed to generate key');
+          resultBox.classList.add('error');
+          document.getElementById('successContent').style.display = 'none';
+          document.getElementById('errorContent').style.display = 'block';
+          document.getElementById('errorContent').innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${data.error || 'Failed to generate'}`;
         }
       } catch (err) {
-        showError('Network error. Please try again.');
+        resultBox.style.display = 'block';
+        resultBox.classList.add('error');
+        document.getElementById('successContent').style.display = 'none';
+        document.getElementById('errorContent').style.display = 'block';
+        document.getElementById('errorContent').innerHTML = `<i class="fas fa-exclamation-triangle"></i> Network error`;
       } finally {
-        generateBtn.disabled = false;
-        generateBtn.textContent = 'Generate Key';
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-magic"></i> Generate License';
       }
-    }
+    });
 
-    async function listKeys() {
-      const password = passwordInput.value;
+    document.getElementById('copyBtn').addEventListener('click', () => {
+      const key = document.getElementById('generatedKey').textContent;
+      navigator.clipboard.writeText(key).then(() => {
+        const btn = document.getElementById('copyBtn');
+        const origText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        btn.classList.replace('btn-secondary', 'btn-success');
+        setTimeout(() => {
+          btn.innerHTML = origText;
+          btn.classList.replace('btn-success', 'btn-secondary');
+        }, 2000);
+      });
+    });
 
-      if (!password) {
-        return;
-      }
-
-      keysListEl.innerHTML = '<p style="color: var(--text-muted);">Loading keys...</p>';
-
-      try {
-        const response = await fetch('/.netlify/functions/list-keys', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password })
-        });
-
-        const data = await response.json();
-
-        if (response.ok && data.ok) {
-          renderKeys(data.licenses);
-        } else {
-          keysListEl.innerHTML = `<p class="error-message">${data.error || 'Failed to load keys'}</p>`;
-        }
-      } catch (err) {
-        keysListEl.innerHTML = '<p class="error-message">Network error. Please try again.</p>';
-      }
-    }
-
-    function renderKeys(licenses) {
-      if (!licenses.length) {
-        keysListEl.innerHTML = '<p style="color: var(--text-muted);">No keys found.</p>';
-        return;
-      }
-
-      const tableHtml = `
-        <div class="keys-table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Key</th>
-                <th>Duration</th>
-                <th>Remaining</th>
-                <th>In Use</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${licenses.map(license => {
-                let daysRemaining = 'Not activated';
-                if (license.activated_at) {
-                  const activatedAt = new Date(license.activated_at);
-                  const now = new Date();
-                  let durationMs;
-                  if (license.duration_days === -1) {
-                    durationMs = 20 * 60 * 1000; // 20 minutes demo
-                    const expiresAt = new Date(activatedAt.getTime() + durationMs);
-                    const msRemaining = expiresAt - now;
-                    daysRemaining = msRemaining > 0 ? `${Math.ceil(msRemaining / (1000 * 60))} mins` : 'Expired';
-                  } else {
-                    durationMs = license.duration_days * 24 * 60 * 60 * 1000;
-                    const expiresAt = new Date(activatedAt.getTime() + durationMs);
-                    const msRemaining = expiresAt - now;
-                    daysRemaining = msRemaining > 0 ? `${Math.ceil(msRemaining / (1000 * 60 * 60 * 24))} days` : 'Expired';
-                  }
-                } else if (license.duration_days !== -1) {
-                  daysRemaining = `${license.duration_days} days`;
-                }
-
-                const isInUse = !!license.bound_machine_id;
-
-                return `
-                <tr>
-                  <td style="font-family: monospace; font-size: 0.8rem;">${license.license_key}</td>
-                  <td style="font-size: 0.85rem;">${license.duration_days === -1 ? 'Demo' : license.duration_days + 'd'}</td>
-                  <td style="font-size: 0.85rem;">${daysRemaining}</td>
-                  <td style="font-size: 0.85rem;">${isInUse ? '✅' : '❌'}</td>
-                  <td><span class="status-badge status-${license.status}">${license.status}</span></td>
-                  <td style="display: flex; gap: 0.3rem; flex-wrap: wrap;">
-                    ${license.status !== 'revoked' && license.status !== 'expired' ? 
-                      `<button class="btn btn-warning btn-sm" onclick="updateKeyStatus('${license.id}', 'revoked')" style="font-size: 0.75rem; padding: 0.35rem 0.6rem;">Pause</button>` :
-                      license.status === 'revoked' ? 
-                        `<button class="btn btn-success btn-sm" onclick="updateKeyStatus('${license.id}', 'active')" style="font-size: 0.75rem; padding: 0.35rem 0.6rem;">Unpause</button>` : ''
-                    }
-                    <button class="btn btn-danger btn-sm" onclick="deleteKey('${license.id}', '${license.license_key}')" style="font-size: 0.75rem; padding: 0.35rem 0.6rem;">Delete</button>
-                  </td>
-                </tr>
-              `}).join('')}
-            </tbody>
-          </table>
-        </div>
-      `;
-
-      keysListEl.innerHTML = tableHtml;
-    }
-
+    // Actions
     window.updateKeyStatus = async function(licenseId, newStatus) {
-      const password = passwordInput.value;
-
-      if (!password) {
-        alert('Please enter admin password first');
-        return;
-      }
-
+      if (!currentPassword) return;
       try {
         const response = await fetch('/.netlify/functions/update-key-status', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password, licenseId, newStatus })
+          body: JSON.stringify({ password: currentPassword, licenseId, newStatus })
         });
-
         const data = await response.json();
-
         if (response.ok && data.ok) {
-          await listKeys();
+          await loadData();
         } else {
-          alert(data.error || 'Failed to update key status');
+          alert(data.error || 'Failed to update status');
         }
       } catch (err) {
-        alert('Network error. Please try again.');
+        alert('Network error');
       }
     };
 
     window.deleteKey = async function(licenseId, licenseKey) {
-      const password = passwordInput.value;
-
-      if (!password) {
-        alert('Please enter admin password first');
-        return;
-      }
-
-      const confirmDelete = confirm(`Are you sure you want to delete the key:\n${licenseKey}?\nThis cannot be undone!`);
-      if (!confirmDelete) {
-        return;
-      }
-
+      if (!currentPassword) return;
+      if (!confirm(`Permanently delete key:\n${licenseKey}?`)) return;
       try {
         const response = await fetch('/.netlify/functions/delete-key', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password, licenseId })
+          body: JSON.stringify({ password: currentPassword, licenseId })
         });
-
         const data = await response.json();
-
         if (response.ok && data.ok) {
-          await listKeys();
+          await loadData();
         } else {
-          alert(data.error || 'Failed to delete key');
+          alert(data.error || 'Failed to delete');
         }
       } catch (err) {
-        alert('Network error. Please try again.');
+        alert('Network error');
       }
     };
-
-    function showSuccess(key) {
-      resultBox.style.display = 'block';
-      resultBox.classList.remove('error');
-      successContent.style.display = 'block';
-      errorContent.style.display = 'none';
-      generatedKeyEl.textContent = key;
-    }
-
-    function showError(message) {
-      resultBox.style.display = 'block';
-      resultBox.classList.add('error');
-      successContent.style.display = 'none';
-      errorContent.style.display = 'block';
-      errorContent.textContent = message;
-    }
-
-    function hideResult() {
-      resultBox.style.display = 'none';
-    }
-
-    copyBtn.addEventListener('click', () => {
-      const key = generatedKeyEl.textContent;
-      navigator.clipboard.writeText(key).then(() => {
-        copyBtn.textContent = 'Copied! ✓';
-        setTimeout(() => {
-          copyBtn.textContent = 'Copy to Clipboard';
-        }, 2000);
-      }).catch(err => {
-        alert('Failed to copy: ' + err);
-      });
-    });
-
-    generateBtn.addEventListener('click', generateKey);
-    refreshBtn.addEventListener('click', listKeys);
-
-    // Auto-load keys on page load if password is saved (optional, but we'll just show placeholder)
-    keysListEl.innerHTML = '<p style="color: var(--text-muted);">Enter admin password and click Refresh List to see keys</p>';
   </script>
 </body>
 </html>
