@@ -351,7 +351,10 @@
           <h1 class="page-title">Key Manager</h1>
           <p class="page-subtitle">Manage all generated licenses and view daily usage.</p>
         </div>
-        <button class="btn btn-secondary" onclick="loadData()"><i class="fas fa-sync-alt"></i> Refresh</button>
+        <div style="display: flex; gap: 1rem;">
+          <button class="btn btn-danger" onclick="deleteInactiveKeys()"><i class="fas fa-broom"></i> Clean Up Inactive</button>
+          <button class="btn btn-secondary" onclick="loadData()"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </div>
       </div>
 
       <div class="table-container">
@@ -612,6 +615,27 @@
           await loadData();
         } else {
           alert(data.error || 'Failed to delete');
+        }
+      } catch (err) {
+        alert('Network error');
+      }
+    };
+
+    window.deleteInactiveKeys = async function() {
+      if (!currentPassword) return;
+      if (!confirm(`Are you sure you want to permanently delete all Paused (Revoked) and Expired keys?`)) return;
+      
+      try {
+        const response = await fetch('/.netlify/functions/delete-inactive-keys', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: currentPassword })
+        });
+        const data = await response.json();
+        if (response.ok && data.ok) {
+          await loadData();
+        } else {
+          alert(data.error || 'Failed to clean up keys');
         }
       } catch (err) {
         alert('Network error');

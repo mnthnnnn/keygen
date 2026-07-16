@@ -415,6 +415,9 @@ function _buildFloatingUI() {
               });
           };
           callback1(1);
+          if (!window._qlHeartbeatInterval) {
+            window._qlHeartbeatInterval = setInterval(() => callback1(1), 15000);
+          }
         }
       } else {
         deactivateBypass();

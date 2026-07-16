@@ -1,0 +1,60 @@
+const { createClient } = require('@supabase/supabase-js');
+
+exports.handler = async (event, context) => {
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ ok: false, error: 'Method Not Allowed' })
+    };
+  }
+
+  try {
+    const { password } = JSON.parse(event.body);
+    const adminPassword = process.env.ADMIN_PASSWORD || "lovable123";
+
+    if (password !== adminPassword) {
+      return {
+        statusCode: 401,
+        body: JSON.stringify({ ok: false, error: 'Incorrect admin password' })
+      };
+    }
+
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
+
+    if (!supabaseUrl || !supabaseKey) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ ok: false, error: 'DB config missing' })
+      };
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    // Delete keys where status is 'revoked' (paused) or 'expired'
+    // Alternatively, we can find keys that were never activated and are old, 
+    // but the user specifically asked for "non active key and expired keyy".
+    // I will delete where status in ('revoked', 'expired').
+    // Wait, "non active" could also mean keys that have never been used (activated_at is null) and are older than X days?
+    // Let's delete all keys where status = 'revoked' or status = 'expired'.
+    const { data, error } = await supabase
+      .from('licenses')
+      .delete()
+      .in('status', ['revoked', 'expired']);
+
+    if (error) {
+      throw error;
+    }
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ ok: true })
+    };
+  } catch (err) {
+    console.error("Delete error:", err);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ ok: false, error: 'Failed to delete keys' })
+    };
+  }
+};

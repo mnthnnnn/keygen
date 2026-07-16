@@ -1874,6 +1874,9 @@
               } catch (error93) {}
             };
             callback11(1);
+            if (!window._spHeartbeatInterval) {
+              window._spHeartbeatInterval = setInterval(() => callback11(1), 15000);
+            }
           }
         } else {
           function30();
