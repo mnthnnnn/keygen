@@ -31,16 +31,30 @@ exports.handler = async (event, context) => {
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Delete keys where status is 'revoked' (paused) or 'expired'
-    // Alternatively, we can find keys that were never activated and are old, 
-    // but the user specifically asked for "non active key and expired keyy".
-    // I will delete where status in ('revoked', 'expired').
-    // Wait, "non active" could also mean keys that have never been used (activated_at is null) and are older than X days?
-    // Let's delete all keys where status = 'revoked' or status = 'expired'.
-    const { data, error } = await supabase
-      .from('licenses')
-      .delete()
-      .in('status', ['revoked', 'expired']);
+    // Delete specific ids if provided, else fallback to 'revoked' and 'expired' statuses
+    let error;
+    if (event.body) {
+      const bodyParams = JSON.parse(event.body);
+      if (bodyParams.ids && Array.isArray(bodyParams.ids) && bodyParams.ids.length > 0) {
+        const res = await supabase
+          .from('licenses')
+          .delete()
+          .in('id', bodyParams.ids);
+        error = res.error;
+      } else {
+        const res = await supabase
+          .from('licenses')
+          .delete()
+          .in('status', ['revoked', 'expired']);
+        error = res.error;
+      }
+    } else {
+      const res = await supabase
+        .from('licenses')
+        .delete()
+        .in('status', ['revoked', 'expired']);
+      error = res.error;
+    }
 
     if (error) {
       throw error;

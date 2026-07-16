@@ -117,6 +117,7 @@
     .stat-card:nth-child(2) .stat-icon { background: var(--success-bg); color: var(--success); }
     .stat-card:nth-child(3) .stat-icon { background: var(--warning-bg); color: var(--warning); }
     .stat-card:nth-child(4) .stat-icon { background: var(--error-bg); color: var(--error); }
+    .stat-card:nth-child(5) .stat-icon { background: rgba(236, 72, 153, 0.15); color: #ec4899; }
     .stat-value { font-size: 2.25rem; font-weight: 700; margin-bottom: 0.25rem; }
     .stat-label { color: var(--text-muted); font-size: 0.9rem; font-weight: 500; }
 
@@ -297,6 +298,30 @@
           <div class="stat-value" id="statExpired">0</div>
           <div class="stat-label">Expired Keys</div>
         </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
+          <div class="stat-value" id="statExpiringSoon">0</div>
+          <div class="stat-label">Expiring Soon</div>
+        </div>
+      </div>
+      
+      <div class="panel" style="display: block; padding: 1.5rem; background: rgba(0,0,0,0.2); margin-bottom: 2rem;">
+        <h3 style="margin-bottom: 1rem; color: #ec4899;"><i class="fas fa-hourglass-half"></i> Keys Expiring Soon</h3>
+        <div class="table-container" style="margin-top: 0;">
+          <table style="width: 100%;">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Plan</th>
+                <th>Expires In</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="expiringSoonList">
+              <tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 1rem;">No keys expiring soon.</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       
       <div class="panel" style="display: block; padding: 1.5rem; background: rgba(0,0,0,0.2);">
@@ -351,8 +376,9 @@
           <h1 class="page-title">Key Manager</h1>
           <p class="page-subtitle">Manage all generated licenses and view daily usage.</p>
         </div>
-        <div style="display: flex; gap: 1rem;">
-          <button class="btn btn-danger" onclick="deleteInactiveKeys()"><i class="fas fa-broom"></i> Clean Up Inactive</button>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+          <button class="btn btn-danger" onclick="deleteExpiredKeys()"><i class="fas fa-trash-alt"></i> Delete Expired</button>
+          <button class="btn btn-warning" style="background: var(--warning); color: white; border: none;" onclick="deleteInactiveKeys()"><i class="fas fa-broom"></i> Clean Up Paused</button>
           <button class="btn btn-secondary" onclick="loadData()"><i class="fas fa-sync-alt"></i> Refresh</button>
         </div>
       </div>
@@ -411,26 +437,35 @@
       document.getElementById('authOverlay').style.display = 'flex';
     });
 
-    // Helper to format remaining time
-    function getRemainingTime(license) {
-      if (license.status === 'revoked') return 'Paused';
-      if (!license.activated_at) return 'Not Activated';
+    // Helper to get detailed info about a license
+    function getKeyInfo(license) {
+      if (license.status === 'revoked') return { remaining: 'Paused', status: 'revoked', expiringSoon: false, isExpired: false, expireDate: null };
+      if (!license.activated_at) return { remaining: 'Not Activated', status: license.status, expiringSoon: false, isExpired: false, expireDate: null };
       
       const activatedAt = new Date(license.activated_at);
       const now = new Date();
-      let durationMs;
+      let durationMs = license.duration_days === -1 ? 20 * 60 * 1000 : license.duration_days * 24 * 60 * 60 * 1000;
       
-      if (license.duration_days === -1) {
-        durationMs = 20 * 60 * 1000;
-        const expiresAt = new Date(activatedAt.getTime() + durationMs);
-        const msRemaining = expiresAt - now;
-        return msRemaining > 0 ? `${Math.ceil(msRemaining / (1000 * 60))} mins` : 'Expired';
-      } else {
-        durationMs = license.duration_days * 24 * 60 * 60 * 1000;
-        const expiresAt = new Date(activatedAt.getTime() + durationMs);
-        const msRemaining = expiresAt - now;
-        return msRemaining > 0 ? `${Math.ceil(msRemaining / (1000 * 60 * 60 * 24))} days` : 'Expired';
+      const expiresAt = new Date(activatedAt.getTime() + durationMs);
+      const msRemaining = expiresAt - now;
+      
+      if (msRemaining <= 0) {
+        return { remaining: 'Expired', status: 'expired', expiringSoon: false, isExpired: true, expireDate: expiresAt };
       }
+      
+      const daysLeft = msRemaining / (1000 * 60 * 60 * 24);
+      let expiringSoon = false;
+      // Exclude demo keys (-1) entirely from 'Expiring Soon'
+      if (license.duration_days !== -1 && daysLeft <= 3) expiringSoon = true; // less than 3 days
+      
+      let remainingStr = '';
+      if (license.duration_days === -1) {
+        remainingStr = `${Math.ceil(msRemaining / (1000 * 60))} mins`;
+      } else {
+        remainingStr = `${Math.ceil(daysLeft)} days`;
+      }
+      
+      return { remaining: remainingStr, status: 'active', expiringSoon, isExpired: false, expireDate: expiresAt };
     }
 
     // Check if used today
@@ -472,10 +507,62 @@
     }
 
     function updateDashboardStats() {
+      let activeCount = 0;
+      let revokedCount = 0;
+      let expiredCount = 0;
+      let expiringSoonCount = 0;
+      
+      const expiringSoonKeys = [];
+
+      globalLicenses.forEach(l => {
+        const info = getKeyInfo(l);
+        if (info.status === 'active') activeCount++;
+        else if (info.status === 'revoked') revokedCount++;
+        else if (info.status === 'expired') expiredCount++;
+        
+        if (info.expiringSoon) {
+          expiringSoonCount++;
+          expiringSoonKeys.push({ license: l, info });
+        }
+      });
+
       document.getElementById('statTotal').innerText = globalLicenses.length;
-      document.getElementById('statActive').innerText = globalLicenses.filter(l => l.status === 'active').length;
-      document.getElementById('statPaused').innerText = globalLicenses.filter(l => l.status === 'revoked').length;
-      document.getElementById('statExpired').innerText = globalLicenses.filter(l => l.status === 'expired').length;
+      document.getElementById('statActive').innerText = activeCount;
+      document.getElementById('statPaused').innerText = revokedCount;
+      document.getElementById('statExpired').innerText = expiredCount;
+      
+      const soonEl = document.getElementById('statExpiringSoon');
+      if (soonEl) soonEl.innerText = expiringSoonCount;
+      
+      // Render expiring soon keys on dashboard
+      const soonTbody = document.getElementById('expiringSoonList');
+      if (soonTbody) {
+        if (expiringSoonKeys.length === 0) {
+          soonTbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 1rem;">No keys expiring soon.</td></tr>`;
+        } else {
+          // Sort by expiration date ascending
+          expiringSoonKeys.sort((a, b) => a.info.expireDate - b.info.expireDate);
+          
+          soonTbody.innerHTML = expiringSoonKeys.map(item => {
+            const plan = `${item.license.duration_days} Days`;
+            let remainingDisplay = item.info.remaining;
+            if (item.info.expireDate) {
+              remainingDisplay += `<br><span style="font-size: 0.75rem; color: var(--text-muted);">${item.info.expireDate.toLocaleString()}</span>`;
+            }
+            return `
+              <tr>
+                <td class="key-cell">${item.license.license_key}</td>
+                <td>${plan}</td>
+                <td>${remainingDisplay}</td>
+                <td class="actions-cell">
+                  <button class="btn btn-warning btn-sm" onclick="updateKeyStatus('${item.license.id}', 'revoked')" title="Pause User"><i class="fas fa-pause"></i></button>
+                  <button class="btn btn-danger btn-sm" onclick="deleteKey('${item.license.id}', '${item.license.license_key}')"><i class="fas fa-trash"></i></button>
+                </td>
+              </tr>
+            `;
+          }).join('');
+        }
+      }
     }
 
     function renderKeysTable() {
@@ -487,12 +574,15 @@
 
       tbody.innerHTML = globalLicenses.map(license => {
         const plan = license.duration_days === -1 ? 'Demo' : `${license.duration_days} Days`;
-        const remaining = getRemainingTime(license);
+        const info = getKeyInfo(license);
         const usedToday = wasUsedToday(license.last_used_at);
         
         let statusBadge = '';
-        if (license.status === 'active') statusBadge = '<span class="badge badge-active">Active</span>';
-        else if (license.status === 'revoked') statusBadge = '<span class="badge badge-revoked">Paused</span>';
+        if (info.status === 'active') {
+          if (info.expiringSoon) statusBadge = '<span class="badge" style="background: rgba(236, 72, 153, 0.15); color: #ec4899;">Expiring Soon</span>';
+          else statusBadge = '<span class="badge badge-active">Active</span>';
+        }
+        else if (info.status === 'revoked') statusBadge = '<span class="badge badge-revoked">Paused</span>';
         else statusBadge = '<span class="badge badge-expired">Expired</span>';
 
         let usageIndicator = `<div class="used-today"><div class="dot no"></div> <span style="font-size: 0.85rem; color: var(--text-muted);">No</span></div>`;
@@ -503,18 +593,23 @@
         }
 
         let actionButtons = '';
-        if (license.status === 'active') {
-          actionButtons += `<button class="btn btn-warning btn-sm" onclick="updateKeyStatus('${license.id}', 'revoked')" title="Pause User (Extension Auto-Signout)"><i class="fas fa-pause"></i> Pause</button>`;
-        } else if (license.status === 'revoked') {
+        if (info.status === 'active' || info.status === 'expired') {
+          actionButtons += `<button class="btn btn-warning btn-sm" onclick="updateKeyStatus('${license.id}', 'revoked')" title="Pause User"><i class="fas fa-pause"></i> Pause</button>`;
+        } else if (info.status === 'revoked') {
           actionButtons += `<button class="btn btn-success btn-sm" onclick="updateKeyStatus('${license.id}', 'active')"><i class="fas fa-play"></i> Unpause</button>`;
         }
         actionButtons += `<button class="btn btn-danger btn-sm" onclick="deleteKey('${license.id}', '${license.license_key}')"><i class="fas fa-trash"></i></button>`;
+
+        let remainingDisplay = info.remaining;
+        if (info.expireDate) {
+          remainingDisplay += `<br><span style="font-size: 0.75rem; color: var(--text-muted);">${info.expireDate.toLocaleString()}</span>`;
+        }
 
         return `
           <tr>
             <td class="key-cell">${license.license_key}</td>
             <td>${plan}</td>
-            <td>${remaining}</td>
+            <td>${remainingDisplay}</td>
             <td>${usageIndicator}</td>
             <td>${statusBadge}</td>
             <td class="actions-cell">${actionButtons}</td>
@@ -623,7 +718,7 @@
 
     window.deleteInactiveKeys = async function() {
       if (!currentPassword) return;
-      if (!confirm(`Are you sure you want to permanently delete all Paused (Revoked) and Expired keys?`)) return;
+      if (!confirm(`Are you sure you want to permanently delete all Paused (Revoked) and globally Expired keys?`)) return;
       
       try {
         const response = await fetch('/.netlify/functions/delete-inactive-keys', {
@@ -636,6 +731,41 @@
           await loadData();
         } else {
           alert(data.error || 'Failed to clean up keys');
+        }
+      } catch (err) {
+        alert('Network error');
+      }
+    };
+
+    window.deleteExpiredKeys = async function() {
+      if (!currentPassword) return;
+      
+      const expiredIds = [];
+      globalLicenses.forEach(l => {
+        const info = getKeyInfo(l);
+        if (info.status === 'expired') {
+          expiredIds.push(l.id);
+        }
+      });
+      
+      if (expiredIds.length === 0) {
+        alert("No expired keys found.");
+        return;
+      }
+
+      if (!confirm(`Are you sure you want to permanently delete ${expiredIds.length} Expired key(s)?`)) return;
+      
+      try {
+        const response = await fetch('/.netlify/functions/delete-inactive-keys', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: currentPassword, ids: expiredIds })
+        });
+        const data = await response.json();
+        if (response.ok && data.ok) {
+          await loadData();
+        } else {
+          alert(data.error || 'Failed to clean up expired keys');
         }
       } catch (err) {
         alert('Network error');
