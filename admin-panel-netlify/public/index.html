@@ -548,6 +548,7 @@
     document.getElementById('loginForm').addEventListener('submit', (e) => {
       e.preventDefault();
       currentPassword = document.getElementById('adminPassword').value;
+      localStorage.setItem('adminSession', currentPassword);
       closeModal('authOverlay');
       loadData();
     });
@@ -555,6 +556,7 @@
     function logout() {
       currentPassword = "";
       document.getElementById('adminPassword').value = "";
+      localStorage.removeItem('adminSession');
       openModal('authOverlay');
     }
 
@@ -615,6 +617,7 @@
 
           updateDashboardStats();
           renderKeysTable();
+          closeModal('authOverlay'); // Ensure modal is closed on success
         } else {
           if(data.error === 'Incorrect admin password') {
             alert('Invalid Password!'); logout();
@@ -837,6 +840,15 @@
         if (response.ok) { showToast(`${expiredIds.length} keys deleted`); loadData(); }
       } catch (err) { }
     };
+
+    // Auto-Login Check on Page Load
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedSession = localStorage.getItem('adminSession');
+      if (savedSession) {
+        currentPassword = savedSession;
+        loadData(); // Will validate the password and close modal on success
+      }
+    });
   </script>
 </body>
 </html>
