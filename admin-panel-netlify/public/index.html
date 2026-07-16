@@ -2,34 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Admin Dashboard | Lovable</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --primary: #8b5cf6;
-      --primary-hover: #7c3aed;
-      --secondary: #3b82f6;
-      --bg-base: #0f1115;
-      --bg-card: rgba(255, 255, 255, 0.03);
-      --bg-card-hover: rgba(255, 255, 255, 0.05);
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --border-color: rgba(255, 255, 255, 0.08);
-      --success: #10b981;
-      --success-bg: rgba(16, 185, 129, 0.15);
-      --error: #ef4444;
-      --error-bg: rgba(239, 68, 68, 0.15);
-      --warning: #f59e0b;
-      --warning-bg: rgba(245, 158, 11, 0.15);
-      --gray-bg: rgba(100, 116, 139, 0.15);
+      --primary: #0A84FF; /* iOS Blue */
+      --primary-hover: #007AFF;
+      --bg-base: #000000; /* True black for OLED */
+      --bg-card: rgba(28, 28, 30, 0.7);
+      --bg-card-hover: rgba(44, 44, 46, 0.8);
+      --text-main: #FFFFFF;
+      --text-muted: #EBEBF599; /* iOS secondary text */
+      --border-color: rgba(255, 255, 255, 0.1);
       
-      --glow-primary: rgba(139, 92, 246, 0.3);
-      --glow-secondary: rgba(59, 130, 246, 0.3);
+      --success: #32D74B; /* iOS Green */
+      --success-bg: rgba(50, 215, 75, 0.15);
+      --error: #FF453A; /* iOS Red */
+      --error-bg: rgba(255, 69, 58, 0.15);
+      --warning: #FF9F0A; /* iOS Orange */
+      --warning-bg: rgba(255, 159, 10, 0.15);
+      --purple: #BF5AF2; /* iOS Purple */
+      --purple-bg: rgba(191, 90, 242, 0.15);
+      --gray-bg: rgba(142, 142, 147, 0.15);
+      
+      --blur: blur(25px);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; -webkit-tap-highlight-color: transparent; }
     
     body {
       background-color: var(--bg-base);
@@ -42,18 +43,18 @@
     /* Ambient Background Glow */
     .ambient-glow {
       position: fixed; top: -20%; left: -10%; width: 50vw; height: 50vw;
-      background: radial-gradient(circle, var(--glow-primary) 0%, transparent 60%);
+      background: radial-gradient(circle, rgba(10,132,255,0.15) 0%, transparent 60%);
       filter: blur(100px); z-index: -1; pointer-events: none;
     }
     .ambient-glow.right {
       top: 40%; left: auto; right: -20%;
-      background: radial-gradient(circle, var(--glow-secondary) 0%, transparent 60%);
+      background: radial-gradient(circle, rgba(191,90,242,0.15) 0%, transparent 60%);
     }
 
-    /* Sidebar */
+    /* Sidebar (Desktop) */
     .sidebar {
-      width: 280px; background: rgba(15, 17, 21, 0.7);
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      width: 260px; background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
       border-right: 1px solid var(--border-color);
       display: flex; flex-direction: column; padding: 2rem 1rem;
       z-index: 10;
@@ -63,213 +64,272 @@
       display: flex; align-items: center; gap: 1rem; padding: 0 1rem 2rem 1rem;
     }
     .brand-icon {
-      width: 40px; height: 40px; border-radius: 12px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--purple));
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.25rem; color: white; box-shadow: 0 0 20px var(--glow-primary);
+      font-size: 1.1rem; color: white;
     }
     .brand-text {
-      font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #fff, #a5b4fc);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      font-size: 1.4rem; font-weight: 700; letter-spacing: -0.5px;
     }
 
     .nav-item {
       display: flex; align-items: center; gap: 1rem;
-      padding: 1rem; margin-bottom: 0.5rem; border-radius: 12px;
+      padding: 0.85rem 1rem; margin-bottom: 0.25rem; border-radius: 12px;
       color: var(--text-muted); cursor: pointer; font-weight: 500;
-      transition: all 0.3s ease; border: 1px solid transparent;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .nav-item:hover {
-      background: var(--bg-card-hover); color: var(--text-main);
-    }
-    .nav-item.active {
-      background: rgba(139, 92, 246, 0.1); color: var(--text-main);
-      border-color: rgba(139, 92, 246, 0.2); box-shadow: 0 4px 20px rgba(139, 92, 246, 0.05);
-    }
-    .nav-item i { width: 20px; text-align: center; font-size: 1.1rem; }
+    .nav-item:hover { background: var(--bg-card-hover); color: var(--text-main); }
+    .nav-item.active { background: rgba(255,255,255,0.1); color: var(--primary); }
+    .nav-item i { width: 24px; text-align: center; font-size: 1.2rem; }
 
     /* Main Content */
     .main-content {
-      flex: 1; padding: 2rem 3rem; overflow-y: auto; height: 100vh;
+      flex: 1; padding: 2.5rem 3rem; overflow-y: auto; height: 100vh;
+      padding-bottom: 6rem; /* Extra padding for bottom nav on mobile */
     }
-    .page-header { margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end; }
-    .page-title { font-size: 2rem; font-weight: 600; margin-bottom: 0.25rem; }
+    
+    .page-header { margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; }
+    .page-title { font-size: 2.25rem; font-weight: 700; margin-bottom: 0.25rem; letter-spacing: -1px; }
     .page-subtitle { color: var(--text-muted); font-size: 0.95rem; }
+
+    /* Action Buttons in Header */
+    .header-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
 
     /* Stats Grid */
     .stats-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.5rem; margin-bottom: 2rem;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem; margin-bottom: 2rem;
     }
     .stat-card {
       background: var(--bg-card); border: 1px solid var(--border-color);
-      border-radius: 16px; padding: 1.5rem; backdrop-filter: blur(10px);
-      transition: transform 0.3s ease, border-color 0.3s ease;
+      border-radius: 20px; padding: 1.25rem; 
+      backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+      transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex; flex-direction: column;
     }
-    .stat-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.15); }
+    .stat-card:active { transform: scale(0.97); }
+    
+    .stat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
     .stat-icon {
-      width: 48px; height: 48px; border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.25rem; margin-bottom: 1rem;
+      width: 40px; height: 40px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
     }
-    .stat-card:nth-child(1) .stat-icon { background: var(--gray-bg); color: #fff; }
-    .stat-card:nth-child(2) .stat-icon { background: var(--success-bg); color: var(--success); }
-    .stat-card:nth-child(3) .stat-icon { background: var(--warning-bg); color: var(--warning); }
-    .stat-card:nth-child(4) .stat-icon { background: var(--error-bg); color: var(--error); }
-    .stat-card:nth-child(5) .stat-icon { background: rgba(236, 72, 153, 0.15); color: #ec4899; }
-    .stat-card:nth-child(6) .stat-icon { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
-    .stat-value { font-size: 2.25rem; font-weight: 700; margin-bottom: 0.25rem; }
-    .stat-label { color: var(--text-muted); font-size: 0.9rem; font-weight: 500; }
+    .stat-card:nth-child(1) .stat-icon { background: var(--purple-bg); color: var(--purple); } /* Revenue */
+    .stat-card:nth-child(2) .stat-icon { background: var(--success-bg); color: var(--success); } /* Active Rev */
+    .stat-card:nth-child(3) .stat-icon { background: rgba(10,132,255,0.15); color: var(--primary); } /* Total Keys */
+    .stat-card:nth-child(4) .stat-icon { background: var(--success-bg); color: var(--success); } /* Active Keys */
+    .stat-card:nth-child(5) .stat-icon { background: var(--warning-bg); color: var(--warning); } /* Paused */
+    .stat-card:nth-child(6) .stat-icon { background: var(--gray-bg); color: #fff; } /* Expired */
+    .stat-card:nth-child(7) .stat-icon { background: var(--error-bg); color: var(--error); } /* Expiring Soon */
+    .stat-card:nth-child(8) .stat-icon { background: rgba(255,255,255,0.1); color: #fff; } /* Not Activated */
+
+    .stat-value { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.25rem; letter-spacing: -0.5px; }
+    .stat-label { color: var(--text-muted); font-size: 0.85rem; font-weight: 500; }
 
     /* Panels / Sections */
-    .panel {
-      background: var(--bg-card); border: 1px solid var(--border-color);
-      border-radius: 16px; padding: 2rem; backdrop-filter: blur(10px);
-      margin-bottom: 2rem; display: none; animation: fadeIn 0.4s ease;
-    }
+    .panel { display: none; animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     .panel.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    .panel-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color);
+    .section-card {
+      background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: 24px; padding: 1.5rem; backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+      margin-bottom: 1.5rem;
     }
-    .panel-title { font-size: 1.25rem; font-weight: 600; }
+    .section-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
 
     /* Forms & Inputs */
-    .form-row { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-    .form-group { flex: 1; min-width: 250px; }
+    .form-group { margin-bottom: 1.5rem; }
     .form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
     .form-control {
-      width: 100%; padding: 0.875rem 1rem; border-radius: 10px;
-      background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color);
-      color: var(--text-main); font-size: 1rem; transition: all 0.3s ease;
+      width: 100%; padding: 1rem; border-radius: 14px;
+      background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.15);
+      color: var(--text-main); font-size: 1rem; transition: all 0.2s;
+      -webkit-appearance: none;
     }
-    .form-control:focus {
-      outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
-    }
+    .form-control:focus { outline: none; border-color: var(--primary); background: rgba(0, 0, 0, 0.6); }
     
     /* Buttons */
     .btn {
-      padding: 0.875rem 1.5rem; border: none; border-radius: 10px;
-      font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
+      padding: 0.85rem 1.25rem; border: none; border-radius: 14px;
+      font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
     }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white; box-shadow: 0 4px 15px var(--glow-primary);
-    }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--glow-primary); }
-    .btn-primary:active { transform: translateY(0); }
+    .btn:active { transform: scale(0.96); }
     
-    .btn-secondary { background: rgba(255,255,255,0.1); color: white; border: 1px solid var(--border-color); }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    
+    .btn-secondary { background: rgba(255,255,255,0.1); color: white; }
     .btn-secondary:hover { background: rgba(255,255,255,0.15); }
     
     .btn-success { background: var(--success); color: white; }
     .btn-warning { background: var(--warning); color: white; }
     .btn-danger { background: var(--error); color: white; }
-    .btn-sm { padding: 0.5rem 1rem; font-size: 0.85rem; border-radius: 8px; }
+    .btn-sm { padding: 0.5rem 0.75rem; font-size: 0.85rem; border-radius: 10px; }
 
-    /* Results */
-    .result-box {
-      margin-top: 1.5rem; padding: 1.5rem; border-radius: 12px; display: none;
-      background: var(--success-bg); border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-    .result-box.error { background: var(--error-bg); border-color: rgba(239, 68, 68, 0.3); }
-    .key-display {
-      font-family: 'Courier New', monospace; font-size: 1.5rem; font-weight: 700;
-      color: #fff; margin: 1rem 0; word-break: break-all; letter-spacing: 1px;
-    }
-
-    /* Table */
-    .table-container { overflow-x: auto; margin-top: 1rem; }
-    table { width: 100%; border-collapse: separate; border-spacing: 0; }
-    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-color); }
-    th { font-weight: 500; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
-    td { font-size: 0.95rem; }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: rgba(255, 255, 255, 0.02); }
-
-    .key-cell { font-family: 'Courier New', monospace; font-size: 0.9rem; color: #e2e8f0; }
-    
+    /* Badges */
     .badge {
-      padding: 0.35rem 0.6rem; border-radius: 6px; font-size: 0.75rem;
+      padding: 0.35rem 0.6rem; border-radius: 8px; font-size: 0.75rem;
       font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block;
     }
     .badge-active { background: var(--success-bg); color: var(--success); }
     .badge-revoked { background: var(--warning-bg); color: var(--warning); }
     .badge-expired { background: var(--gray-bg); color: var(--text-muted); }
+    .badge-new { background: rgba(255,255,255,0.1); color: #fff; }
+    .badge-soon { background: var(--error-bg); color: var(--error); }
 
+    /* Desktop Table */
+    .desktop-table-container { overflow-x: auto; margin-top: 1rem; }
+    table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-color); }
+    th { font-weight: 500; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    td { font-size: 0.95rem; }
+    tr:last-child td { border-bottom: none; }
+    
+    .key-cell { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.9rem; color: #e2e8f0; }
+    .actions-cell { display: flex; gap: 0.5rem; }
+    
     .used-today { display: flex; align-items: center; gap: 0.5rem; }
     .dot { width: 8px; height: 8px; border-radius: 50%; }
     .dot.yes { background: var(--success); box-shadow: 0 0 8px var(--success); }
     .dot.no { background: var(--text-muted); }
 
-    .actions-cell { display: flex; gap: 0.5rem; }
-    
-    /* Login Overlay */
-    #authOverlay {
-      position: fixed; inset: 0; background: var(--bg-base); z-index: 100;
-      display: flex; align-items: center; justify-content: center;
+    /* Mobile Card Layout (Hidden on Desktop) */
+    .mobile-cards-container { display: none; flex-direction: column; gap: 1rem; }
+    .mobile-card {
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);
+      border-radius: 16px; padding: 1rem;
     }
-    .auth-box {
-      background: var(--bg-card); padding: 3rem; border-radius: 20px;
-      border: 1px solid var(--border-color); text-align: center;
-      width: 100%; max-width: 400px; backdrop-filter: blur(20px);
-    }
-    
-    /* Mobile Responsiveness */
-    .mobile-menu-btn {
-      display: none; background: none; border: none;
-      color: var(--text-main); font-size: 1.5rem; cursor: pointer;
-      z-index: 20;
-    }
+    .mobile-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+    .mobile-card-key { font-family: monospace; font-size: 1.1rem; font-weight: 600; }
+    .mobile-card-details { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem; font-size: 0.9rem; }
+    .mobile-card-detail span { color: var(--text-muted); display: block; font-size: 0.8rem; margin-bottom: 0.2rem;}
+    .mobile-card-actions { display: flex; gap: 0.5rem; justify-content: flex-end; border-top: 1px solid var(--border-color); padding-top: 1rem; }
 
+    /* Modals / Overlays */
+    .overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+      z-index: 100; display: none; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .overlay.show { display: flex; opacity: 1; }
+    
+    .modal {
+      background: rgba(30, 30, 32, 0.85); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+      border: 1px solid var(--border-color); border-radius: 24px;
+      width: 100%; max-width: 400px; padding: 2rem;
+      transform: translateY(50px) scale(0.95); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .overlay.show .modal { transform: translateY(0) scale(1); }
+    
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .modal-title { font-size: 1.4rem; font-weight: 600; }
+    .close-btn { background: rgba(255,255,255,0.1); border: none; color: white; width: 30px; height: 30px; border-radius: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center;}
+
+    /* Toasts */
+    .toast-container {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 200;
+      display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+    }
+    .toast {
+      background: rgba(44, 44, 46, 0.9); backdrop-filter: blur(20px);
+      color: white; padding: 0.75rem 1.25rem; border-radius: 100px;
+      font-size: 0.95rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
+      animation: toastSlideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1), fadeOut 0.3s ease 2.7s forwards;
+    }
+    @keyframes toastSlideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeOut { to { opacity: 0; } }
+
+    /* Bottom Nav for Mobile */
+    .bottom-nav { display: none; }
+
+    /* Responsive */
     @media (max-width: 768px) {
-      body { flex-direction: column; }
-      .mobile-menu-btn {
-        display: block; position: fixed; top: 1rem; right: 1rem;
+      .sidebar { display: none; }
+      .main-content { padding: 1.5rem 1rem 6rem 1rem; }
+      .page-header { margin-bottom: 1.5rem; }
+      
+      .desktop-table-container { display: none; } /* Hide standard table */
+      .mobile-cards-container { display: flex; } /* Show cards */
+
+      /* Bottom Nav iOS Style */
+      .bottom-nav {
+        display: flex; position: fixed; bottom: 0; left: 0; right: 0;
+        background: rgba(28, 28, 30, 0.85); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+        border-top: 1px solid var(--border-color); z-index: 50;
+        padding: 0.5rem 0 calc(env(safe-area-inset-bottom) + 0.5rem) 0;
+        justify-content: space-around;
       }
-      .sidebar {
-        position: fixed; top: 0; left: -100%; height: 100vh;
-        transition: left 0.3s ease; box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+      .bottom-nav-item {
+        display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
+        color: var(--text-muted); font-size: 0.7rem; font-weight: 500; cursor: pointer;
+        padding: 0.5rem; flex: 1;
       }
-      .sidebar.open { left: 0; }
-      .main-content { padding: 4rem 1rem 1rem 1rem; }
-      .page-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
-      .stats-grid { grid-template-columns: 1fr; }
-      .auth-box { margin: 1rem; padding: 2rem; }
-      .panel { padding: 1.5rem 1rem; }
+      .bottom-nav-item i { font-size: 1.25rem; }
+      .bottom-nav-item.active { color: var(--primary); }
+      
+      /* Modals on mobile stick to bottom like Action Sheets */
+      .modal {
+        margin: 1rem; margin-top: auto; border-radius: 24px 24px 24px 24px; /* iOS action sheet feel */
+        transform: translateY(100%);
+      }
+      .overlay.show .modal { transform: translateY(0); }
     }
   </style>
 </head>
 <body>
   <div class="ambient-glow"></div>
   <div class="ambient-glow right"></div>
-
-  <button class="mobile-menu-btn" id="mobileMenuBtn">
-    <i class="fas fa-bars"></i>
-  </button>
+  <div class="toast-container" id="toastContainer"></div>
 
   <!-- Auth Overlay -->
-  <div id="authOverlay">
-    <div class="auth-box">
-      <div class="brand-icon" style="margin: 0 auto 1.5rem auto; width: 60px; height: 60px; font-size: 2rem;">
-        <i class="fas fa-key"></i>
+  <div id="authOverlay" class="overlay show" style="background: var(--bg-base);">
+    <div class="modal" style="text-align: center; max-width: 350px;">
+      <div class="brand-icon" style="margin: 0 auto 1.5rem auto; width: 64px; height: 64px; font-size: 2rem;">
+        <i class="fas fa-lock"></i>
       </div>
-      <h2 style="margin-bottom: 0.5rem;">Admin Access</h2>
-      <p style="color: var(--text-muted); margin-bottom: 2rem;">Enter your password to continue</p>
+      <h2 style="margin-bottom: 0.5rem; font-weight: 700;">Admin Login</h2>
+      <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem;">Enter your password to access the system</p>
       <form id="loginForm">
         <div class="form-group" style="margin-bottom: 1.5rem;">
-          <input type="password" id="adminPassword" class="form-control" placeholder="Admin Password" required>
+          <input type="password" id="adminPassword" class="form-control" placeholder="Password" required style="text-align: center;">
         </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%;">Access Dashboard</button>
+        <button type="submit" class="btn btn-primary" style="width: 100%; border-radius: 100px;">Unlock Dashboard</button>
       </form>
     </div>
   </div>
 
-  <!-- Sidebar -->
+  <!-- Create Key Modal -->
+  <div id="createKeyModal" class="overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Generate Key</h2>
+        <button class="close-btn" onclick="closeModal('createKeyModal')"><i class="fas fa-times"></i></button>
+      </div>
+      <form id="generateForm">
+        <div class="form-group">
+          <label for="duration">License Duration & Pricing</label>
+          <select id="duration" class="form-control" required>
+            <option value="-1">Demo (20 Minutes) - 0 Rs</option>
+            <option value="1">1 Day - 15 Rs</option>
+            <option value="3">3 Days - 45 Rs</option>
+            <option value="7">7 Days - 90 Rs</option>
+            <option value="30" selected>1 Month - 199 Rs</option>
+            <option value="90">3 Months - 299 Rs</option>
+            <option value="180">6 Months - 599 Rs</option>
+            <option value="365">1 Year - 999 Rs</option>
+            <option value="36500">Lifetime - 2000 Rs</option>
+          </select>
+        </div>
+        <button type="submit" id="generateBtn" class="btn btn-primary" style="width: 100%; border-radius: 14px; margin-top: 1rem;"><i class="fas fa-plus"></i> Create License</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Desktop Sidebar -->
   <aside class="sidebar">
     <div class="brand">
       <div class="brand-icon"><i class="fas fa-bolt"></i></div>
@@ -282,16 +342,29 @@
     <div class="nav-item" data-target="keysPanel">
       <i class="fas fa-key"></i> Key Manager
     </div>
-    <div class="nav-item" data-target="generatePanel">
-      <i class="fas fa-plus-circle"></i> Create New
-    </div>
     
     <div style="margin-top: auto;">
-      <div class="nav-item" id="logoutBtn" style="color: var(--error);">
+      <div class="nav-item" onclick="logout()" style="color: var(--error);">
         <i class="fas fa-sign-out-alt"></i> Lock Session
       </div>
     </div>
   </aside>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-item active" data-target="dashboardPanel">
+      <i class="fas fa-chart-pie"></i>
+      <span>Overview</span>
+    </div>
+    <div class="bottom-nav-item" data-target="keysPanel">
+      <i class="fas fa-key"></i>
+      <span>Keys</span>
+    </div>
+    <div class="bottom-nav-item" onclick="logout()">
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Lock</span>
+    </div>
+  </nav>
 
   <!-- Main Content -->
   <main class="main-content">
@@ -300,106 +373,66 @@
     <div id="dashboardPanel" class="panel active">
       <div class="page-header">
         <div>
-          <h1 class="page-title">Dashboard Overview</h1>
-          <p class="page-subtitle">Real-time statistics of your license keys.</p>
+          <h1 class="page-title">Overview</h1>
+          <p class="page-subtitle">Real-time statistics & revenue.</p>
         </div>
-        <button class="btn btn-secondary" onclick="loadData()"><i class="fas fa-sync-alt"></i> Refresh Data</button>
+        <div class="header-actions">
+          <button class="btn btn-secondary" onclick="loadData()"><i class="fas fa-sync-alt"></i></button>
+          <button class="btn btn-primary" onclick="openModal('createKeyModal')"><i class="fas fa-plus"></i> Create Key</button>
+        </div>
       </div>
 
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="stat-icon"><i class="fas fa-hashtag"></i></div>
-          <div class="stat-value" id="statTotal">0</div>
-          <div class="stat-label">Total Keys</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-          <div class="stat-value" id="statActive">0</div>
-          <div class="stat-label">Active Keys</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon"><i class="fas fa-pause-circle"></i></div>
-          <div class="stat-value" id="statPaused">0</div>
-          <div class="stat-label">Paused (Revoked)</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
-          <div class="stat-value" id="statExpired">0</div>
-          <div class="stat-label">Expired Keys</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
-          <div class="stat-value" id="statExpiringSoon">0</div>
-          <div class="stat-label">Expiring Soon</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon"><i class="fas fa-question-circle"></i></div>
-          <div class="stat-value" id="statUnactivated">0</div>
-          <div class="stat-label">Not Activated</div>
-        </div>
-      </div>
-      
-      <div class="panel" style="display: block; padding: 1.5rem; background: rgba(0,0,0,0.2); margin-bottom: 2rem;">
-        <h3 style="margin-bottom: 1rem; color: #ec4899;"><i class="fas fa-hourglass-half"></i> Keys Expiring Soon</h3>
-        <div class="table-container" style="margin-top: 0;">
-          <table style="width: 100%;">
-            <thead>
-              <tr>
-                <th>Key</th>
-                <th>Plan</th>
-                <th>Expires In</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="expiringSoonList">
-              <tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 1rem;">No keys expiring soon.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      
-      <div class="panel" style="display: block; padding: 1.5rem; background: rgba(0,0,0,0.2);">
-        <h3 style="margin-bottom: 1rem;"><i class="fas fa-info-circle"></i> System Status</h3>
-        <p style="color: var(--text-muted); font-size: 0.95rem;">Database connected successfully. Usage tracking is active.</p>
-      </div>
-    </div>
-
-    <!-- Generate Panel -->
-    <div id="generatePanel" class="panel">
-      <div class="page-header">
-        <div>
-          <h1 class="page-title">Generate Key</h1>
-          <p class="page-subtitle">Create a new license key for a user.</p>
-        </div>
-      </div>
-
-      <form id="generateForm">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="duration">License Duration</label>
-            <select id="duration" class="form-control" required>
-              <option value="-1">Demo (20 Minutes)</option>
-              <option value="1">1 Day</option>
-              <option value="3">3 Days</option>
-              <option value="7">7 Days</option>
-              <option value="30" selected>1 Month (30 Days)</option>
-              <option value="90">3 Months (90 Days)</option>
-              <option value="180">6 Months (180 Days)</option>
-              <option value="365">1 Year (365 Days)</option>
-              <option value="36500">Lifetime (100 Years)</option>
-            </select>
+          <div class="stat-header">
+            <div class="stat-label">Total Revenue</div>
+            <div class="stat-icon"><i class="fas fa-rupee-sign"></i></div>
           </div>
+          <div class="stat-value" id="statTotalRev">₹0</div>
         </div>
-        <button type="submit" id="generateBtn" class="btn btn-primary"><i class="fas fa-magic"></i> Generate License</button>
-      </form>
-
-      <div id="resultBox" class="result-box">
-        <div id="successContent" style="display: none;">
-          <p style="color: var(--success); font-weight: 500;"><i class="fas fa-check-circle"></i> Key Generated Successfully</p>
-          <div class="key-display" id="generatedKey"></div>
-          <button type="button" class="btn btn-secondary" id="copyBtn"><i class="fas fa-copy"></i> Copy to Clipboard</button>
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-label">Active Revenue</div>
+            <div class="stat-icon"><i class="fas fa-rupee-sign"></i></div>
+          </div>
+          <div class="stat-value" id="statActiveRev">₹0</div>
         </div>
-        <div id="errorContent" style="display: none; color: var(--error); font-weight: 500;"></div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-label">Total Keys</div>
+            <div class="stat-icon"><i class="fas fa-hashtag"></i></div>
+          </div>
+          <div class="stat-value" id="statTotal">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-label">Active Keys</div>
+            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+          </div>
+          <div class="stat-value" id="statActive">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-label">Not Activated</div>
+            <div class="stat-icon"><i class="fas fa-asterisk"></i></div>
+          </div>
+          <div class="stat-value" id="statUnactivated">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-label">Expiring Soon</div>
+            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+          </div>
+          <div class="stat-value" id="statExpiringSoon">0</div>
+        </div>
+      </div>
+      
+      <div class="section-card">
+        <h3 class="section-title"><i class="fas fa-bolt" style="color: var(--warning);"></i> Quick Actions</h3>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+          <button class="btn btn-warning" onclick="deleteInactiveKeys()"><i class="fas fa-broom"></i> Clean Up Paused</button>
+          <button class="btn btn-danger" onclick="deleteExpiredKeys()"><i class="fas fa-trash-alt"></i> Delete Expired</button>
+        </div>
       </div>
     </div>
 
@@ -408,31 +441,36 @@
       <div class="page-header">
         <div>
           <h1 class="page-title">Key Manager</h1>
-          <p class="page-subtitle">Manage all generated licenses and view daily usage.</p>
+          <p class="page-subtitle">Manage all generated licenses.</p>
         </div>
-        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-          <button class="btn btn-danger" onclick="deleteExpiredKeys()"><i class="fas fa-trash-alt"></i> Delete Expired</button>
-          <button class="btn btn-warning" style="background: var(--warning); color: white; border: none;" onclick="deleteInactiveKeys()"><i class="fas fa-broom"></i> Clean Up Paused</button>
+        <div class="header-actions">
           <button class="btn btn-secondary" onclick="loadData()"><i class="fas fa-sync-alt"></i> Refresh</button>
+          <button class="btn btn-primary" onclick="openModal('createKeyModal')"><i class="fas fa-plus"></i> New Key</button>
         </div>
       </div>
 
-      <div class="table-container">
+      <!-- Desktop Table -->
+      <div class="section-card desktop-table-container">
         <table id="keysTable">
           <thead>
             <tr>
               <th>Key</th>
               <th>Plan</th>
               <th>Remaining</th>
-              <th>Used Today?</th>
+              <th>Used Today</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody id="keysList">
-            <!-- Data will be injected here -->
+          <tbody id="keysListDesktop">
+            <!-- Data -->
           </tbody>
         </table>
+      </div>
+
+      <!-- Mobile Cards -->
+      <div class="mobile-cards-container" id="keysListMobile">
+        <!-- Data -->
       </div>
     </div>
 
@@ -442,43 +480,68 @@
     let currentPassword = "";
     let globalLicenses = [];
 
-    // Navigation
-    document.querySelectorAll('.nav-item').forEach(item => {
-      if(item.id === 'logoutBtn') return;
-      item.addEventListener('click', (e) => {
-        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-        item.classList.add('active');
-        const target = item.getAttribute('data-target');
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        document.getElementById(target).classList.add('active');
-        if(target === 'keysPanel' || target === 'dashboardPanel') {
-          loadData();
-        }
-        if (window.innerWidth <= 768) {
-          document.querySelector('.sidebar').classList.remove('open');
-        }
-      });
+    // Pricing Logic
+    function getPrice(durationDays) {
+      switch (parseInt(durationDays)) {
+        case 1: return 15;
+        case 3: return 45;
+        case 7: return 90;
+        case 30: return 199;
+        case 90: return 299;
+        case 180: return 599;
+        case 365: return 999;
+        case 36500: return 2000;
+        default: return 0; // Demo
+      }
+    }
+
+    // Navigation (Desktop & Mobile)
+    function switchTab(target) {
+      document.querySelectorAll('.nav-item, .bottom-nav-item').forEach(nav => nav.classList.remove('active'));
+      document.querySelectorAll(`[data-target="${target}"]`).forEach(nav => nav.classList.add('active'));
+      
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.getElementById(target).classList.add('active');
+      if(target === 'keysPanel' || target === 'dashboardPanel') loadData();
+    }
+
+    document.querySelectorAll('.nav-item[data-target], .bottom-nav-item[data-target]').forEach(item => {
+      item.addEventListener('click', () => switchTab(item.getAttribute('data-target')));
     });
 
-    document.getElementById('mobileMenuBtn').addEventListener('click', () => {
-      document.querySelector('.sidebar').classList.toggle('open');
-    });
+    // Modals
+    function openModal(id) {
+      document.getElementById(id).classList.add('show');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('show');
+    }
+
+    // Toast
+    function showToast(message, icon = 'check-circle', color = 'var(--success)') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `<i class="fas fa-${icon}" style="color: ${color};"></i> ${message}`;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
 
     // Auth Flow
     document.getElementById('loginForm').addEventListener('submit', (e) => {
       e.preventDefault();
       currentPassword = document.getElementById('adminPassword').value;
-      document.getElementById('authOverlay').style.display = 'none';
+      closeModal('authOverlay');
       loadData();
     });
 
-    document.getElementById('logoutBtn').addEventListener('click', () => {
+    function logout() {
       currentPassword = "";
       document.getElementById('adminPassword').value = "";
-      document.getElementById('authOverlay').style.display = 'flex';
-    });
+      openModal('authOverlay');
+    }
 
-    // Helper to get detailed info about a license
+    // Key Info Helper
     function getKeyInfo(license) {
       if (license.status === 'revoked') return { remaining: 'Paused', status: 'revoked', expiringSoon: false, isExpired: false, expireDate: null };
       if (!license.activated_at) return { remaining: 'Not Activated', status: license.status, expiringSoon: false, isExpired: false, expireDate: null };
@@ -490,45 +553,29 @@
       const expiresAt = new Date(activatedAt.getTime() + durationMs);
       const msRemaining = expiresAt - now;
       
-      if (msRemaining <= 0) {
-        return { remaining: 'Expired', status: 'expired', expiringSoon: false, isExpired: true, expireDate: expiresAt };
-      }
+      if (msRemaining <= 0) return { remaining: 'Expired', status: 'expired', expiringSoon: false, isExpired: true, expireDate: expiresAt };
       
       const daysLeft = msRemaining / (1000 * 60 * 60 * 24);
-      let expiringSoon = false;
-      // Exclude demo keys (-1) entirely from 'Expiring Soon'
-      if (license.duration_days !== -1 && daysLeft <= 3) expiringSoon = true; // less than 3 days
+      let expiringSoon = (license.duration_days !== -1 && daysLeft <= 3);
       
-      let remainingStr = '';
-      if (license.duration_days === -1) {
-        remainingStr = `${Math.ceil(msRemaining / (1000 * 60))} mins`;
-      } else {
-        remainingStr = `${Math.ceil(daysLeft)} days`;
-      }
-      
+      let remainingStr = license.duration_days === -1 ? `${Math.ceil(msRemaining / (1000 * 60))} mins` : `${Math.ceil(daysLeft)} days`;
       return { remaining: remainingStr, status: 'active', expiringSoon, isExpired: false, expireDate: expiresAt };
     }
 
-    // Check if used today
     function wasUsedToday(lastUsedAtStr) {
       if (!lastUsedAtStr) return false;
       const last = new Date(lastUsedAtStr);
       const today = new Date();
-      return last.getDate() === today.getDate() && 
-             last.getMonth() === today.getMonth() && 
-             last.getFullYear() === today.getFullYear();
+      return last.getDate() === today.getDate() && last.getMonth() === today.getMonth() && last.getFullYear() === today.getFullYear();
     }
 
     async function loadData() {
       if (!currentPassword) return;
-      
       try {
         const response = await fetch('/.netlify/functions/list-keys', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ password: currentPassword })
         });
-        
         const data = await response.json();
         if (response.ok && data.ok) {
           globalLicenses = data.licenses || [];
@@ -536,135 +583,110 @@
           renderKeysTable();
         } else {
           if(data.error === 'Incorrect admin password') {
-            alert('Invalid Password!');
-            document.getElementById('logoutBtn').click();
-          } else {
-            console.error('Failed to load keys', data.error);
+            alert('Invalid Password!'); logout();
           }
         }
-      } catch (err) {
-        console.error('Network error', err);
-      }
+      } catch (err) { console.error(err); }
     }
 
     function updateDashboardStats() {
-      let activeCount = 0;
-      let revokedCount = 0;
-      let expiredCount = 0;
-      let expiringSoonCount = 0;
-      let unactivatedCount = 0;
-      
-      const expiringSoonKeys = [];
+      let activeCount = 0; let unactCount = 0; let expiringSoonCount = 0;
+      let totalRevenue = 0; let activeRevenue = 0;
 
       globalLicenses.forEach(l => {
         const info = getKeyInfo(l);
-        if (info.remaining === 'Not Activated') unactivatedCount++;
-        else if (info.status === 'active') activeCount++;
-        else if (info.status === 'revoked') revokedCount++;
-        else if (info.status === 'expired') expiredCount++;
+        const price = getPrice(l.duration_days);
         
-        if (info.expiringSoon) {
-          expiringSoonCount++;
-          expiringSoonKeys.push({ license: l, info });
+        totalRevenue += price;
+        if (info.status === 'active' || info.remaining === 'Not Activated') {
+          activeRevenue += price;
         }
+
+        if (info.remaining === 'Not Activated') unactCount++;
+        else if (info.status === 'active') activeCount++;
+        if (info.expiringSoon) expiringSoonCount++;
       });
 
       document.getElementById('statTotal').innerText = globalLicenses.length;
       document.getElementById('statActive').innerText = activeCount;
-      document.getElementById('statPaused').innerText = revokedCount;
-      document.getElementById('statExpired').innerText = expiredCount;
+      document.getElementById('statUnactivated').innerText = unactCount;
+      document.getElementById('statExpiringSoon').innerText = expiringSoonCount;
       
-      const soonEl = document.getElementById('statExpiringSoon');
-      if (soonEl) soonEl.innerText = expiringSoonCount;
-
-      const unactEl = document.getElementById('statUnactivated');
-      if (unactEl) unactEl.innerText = unactivatedCount;
-      
-      // Render expiring soon keys on dashboard
-      const soonTbody = document.getElementById('expiringSoonList');
-      if (soonTbody) {
-        if (expiringSoonKeys.length === 0) {
-          soonTbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 1rem;">No keys expiring soon.</td></tr>`;
-        } else {
-          // Sort by expiration date ascending
-          expiringSoonKeys.sort((a, b) => a.info.expireDate - b.info.expireDate);
-          
-          soonTbody.innerHTML = expiringSoonKeys.map(item => {
-            const plan = `${item.license.duration_days} Days`;
-            let remainingDisplay = item.info.remaining;
-            if (item.info.expireDate) {
-              remainingDisplay += `<br><span style="font-size: 0.75rem; color: var(--text-muted);">${item.info.expireDate.toLocaleString()}</span>`;
-            }
-            return `
-              <tr>
-                <td class="key-cell">${item.license.license_key}</td>
-                <td>${plan}</td>
-                <td>${remainingDisplay}</td>
-                <td class="actions-cell">
-                  <button class="btn btn-warning btn-sm" onclick="updateKeyStatus('${item.license.id}', 'revoked')" title="Pause User"><i class="fas fa-pause"></i></button>
-                  <button class="btn btn-danger btn-sm" onclick="deleteKey('${item.license.id}', '${item.license.license_key}')"><i class="fas fa-trash"></i></button>
-                </td>
-              </tr>
-            `;
-          }).join('');
-        }
-      }
+      document.getElementById('statTotalRev').innerText = `₹${totalRevenue}`;
+      document.getElementById('statActiveRev').innerText = `₹${activeRevenue}`;
     }
 
     function renderKeysTable() {
-      const tbody = document.getElementById('keysList');
+      const desktopTbody = document.getElementById('keysListDesktop');
+      const mobileContainer = document.getElementById('keysListMobile');
+      
       if (globalLicenses.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">No keys found. Create one to get started!</td></tr>`;
+        desktopTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">No keys found.</td></tr>`;
+        mobileContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 2rem;">No keys found.</div>`;
         return;
       }
 
-      tbody.innerHTML = globalLicenses.map(license => {
+      let desktopHTML = '';
+      let mobileHTML = '';
+
+      globalLicenses.forEach(license => {
         const plan = license.duration_days === -1 ? 'Demo' : `${license.duration_days} Days`;
+        const price = getPrice(license.duration_days);
         const info = getKeyInfo(license);
         const usedToday = wasUsedToday(license.last_used_at);
         
         let statusBadge = '';
-        if (info.remaining === 'Not Activated') {
-           statusBadge = '<span class="badge" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">Not Activated</span>';
-        }
-        else if (info.status === 'active') {
-          if (info.expiringSoon) statusBadge = '<span class="badge" style="background: rgba(236, 72, 153, 0.15); color: #ec4899;">Expiring Soon</span>';
-          else statusBadge = '<span class="badge badge-active">Active</span>';
-        }
+        if (info.remaining === 'Not Activated') statusBadge = '<span class="badge badge-new">Not Activated</span>';
+        else if (info.status === 'active') statusBadge = info.expiringSoon ? '<span class="badge badge-soon">Expiring Soon</span>' : '<span class="badge badge-active">Active</span>';
         else if (info.status === 'revoked') statusBadge = '<span class="badge badge-revoked">Paused</span>';
         else statusBadge = '<span class="badge badge-expired">Expired</span>';
 
-        let usageIndicator = `<div class="used-today"><div class="dot no"></div> <span style="font-size: 0.85rem; color: var(--text-muted);">No</span></div>`;
-        if (usedToday) {
-          usageIndicator = `<div class="used-today"><div class="dot yes"></div> <span style="font-size: 0.85rem; color: var(--success);">Yes</span></div>`;
-        } else if (!license.activated_at) {
-           usageIndicator = `<span style="font-size: 0.85rem; color: var(--text-muted);">New</span>`;
-        }
+        let usageIndicator = usedToday ? 
+          `<div class="used-today"><div class="dot yes"></div> <span style="font-size: 0.85rem; color: var(--success);">Yes</span></div>` : 
+          (!license.activated_at ? `<span style="font-size: 0.85rem; color: var(--text-muted);">New</span>` : `<div class="used-today"><div class="dot no"></div> <span style="font-size: 0.85rem; color: var(--text-muted);">No</span></div>`);
 
         let actionButtons = '';
         if (info.status === 'active' || info.status === 'expired') {
-          actionButtons += `<button class="btn btn-warning btn-sm" onclick="updateKeyStatus('${license.id}', 'revoked')" title="Pause User"><i class="fas fa-pause"></i> Pause</button>`;
+          actionButtons += `<button class="btn btn-warning btn-sm" onclick="updateKeyStatus('${license.id}', 'revoked')" title="Pause"><i class="fas fa-pause"></i></button>`;
         } else if (info.status === 'revoked') {
-          actionButtons += `<button class="btn btn-success btn-sm" onclick="updateKeyStatus('${license.id}', 'active')"><i class="fas fa-play"></i> Unpause</button>`;
+          actionButtons += `<button class="btn btn-success btn-sm" onclick="updateKeyStatus('${license.id}', 'active')" title="Unpause"><i class="fas fa-play"></i></button>`;
         }
-        actionButtons += `<button class="btn btn-danger btn-sm" onclick="deleteKey('${license.id}', '${license.license_key}')"><i class="fas fa-trash"></i></button>`;
+        actionButtons += `<button class="btn btn-danger btn-sm" onclick="deleteKey('${license.id}', '${license.license_key}')" title="Delete"><i class="fas fa-trash"></i></button>`;
 
         let remainingDisplay = info.remaining;
-        if (info.expireDate) {
-          remainingDisplay += `<br><span style="font-size: 0.75rem; color: var(--text-muted);">${info.expireDate.toLocaleString()}</span>`;
-        }
+        if (info.expireDate) remainingDisplay += `<br><span style="font-size: 0.75rem; color: var(--text-muted);">${info.expireDate.toLocaleString()}</span>`;
 
-        return `
+        // Desktop Row
+        desktopHTML += `
           <tr>
             <td class="key-cell">${license.license_key}</td>
-            <td>${plan}</td>
+            <td>${plan} <span style="color:var(--success); font-size: 0.8rem;">(₹${price})</span></td>
             <td>${remainingDisplay}</td>
             <td>${usageIndicator}</td>
             <td>${statusBadge}</td>
             <td class="actions-cell">${actionButtons}</td>
           </tr>
         `;
-      }).join('');
+
+        // Mobile Card
+        mobileHTML += `
+          <div class="mobile-card">
+            <div class="mobile-card-header">
+              <div class="mobile-card-key">${license.license_key}</div>
+              ${statusBadge}
+            </div>
+            <div class="mobile-card-details">
+              <div class="mobile-card-detail"><span>Plan</span>${plan} <span style="color:var(--success); display:inline;">(₹${price})</span></div>
+              <div class="mobile-card-detail"><span>Remaining</span>${info.remaining}</div>
+              <div class="mobile-card-detail"><span>Used Today</span>${usageIndicator}</div>
+            </div>
+            <div class="mobile-card-actions">${actionButtons}</div>
+          </div>
+        `;
+      });
+
+      desktopTbody.innerHTML = desktopHTML;
+      mobileContainer.innerHTML = mobileHTML;
     }
 
     // Key Generation
@@ -672,57 +694,31 @@
       e.preventDefault();
       const durationDays = document.getElementById('duration').value;
       const btn = document.getElementById('generateBtn');
-      const resultBox = document.getElementById('resultBox');
       
       btn.disabled = true;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
-      resultBox.style.display = 'none';
 
       try {
         const response = await fetch('/.netlify/functions/generate-key', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ password: currentPassword, durationDays })
         });
         const data = await response.json();
 
-        resultBox.style.display = 'block';
         if (response.ok && data.ok) {
-          resultBox.classList.remove('error');
-          document.getElementById('errorContent').style.display = 'none';
-          document.getElementById('successContent').style.display = 'block';
-          document.getElementById('generatedKey').textContent = data.key;
+          navigator.clipboard.writeText(data.key);
+          showToast(`Key generated & copied: ${data.key}`);
+          closeModal('createKeyModal');
           await loadData();
         } else {
-          resultBox.classList.add('error');
-          document.getElementById('successContent').style.display = 'none';
-          document.getElementById('errorContent').style.display = 'block';
-          document.getElementById('errorContent').innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${data.error || 'Failed to generate'}`;
+          showToast(data.error || 'Failed to generate', 'exclamation-triangle', 'var(--error)');
         }
       } catch (err) {
-        resultBox.style.display = 'block';
-        resultBox.classList.add('error');
-        document.getElementById('successContent').style.display = 'none';
-        document.getElementById('errorContent').style.display = 'block';
-        document.getElementById('errorContent').innerHTML = `<i class="fas fa-exclamation-triangle"></i> Network error`;
+        showToast('Network error', 'exclamation-triangle', 'var(--error)');
       } finally {
         btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-magic"></i> Generate License';
+        btn.innerHTML = '<i class="fas fa-plus"></i> Create License';
       }
-    });
-
-    document.getElementById('copyBtn').addEventListener('click', () => {
-      const key = document.getElementById('generatedKey').textContent;
-      navigator.clipboard.writeText(key).then(() => {
-        const btn = document.getElementById('copyBtn');
-        const origText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-        btn.classList.replace('btn-secondary', 'btn-success');
-        setTimeout(() => {
-          btn.innerHTML = origText;
-          btn.classList.replace('btn-success', 'btn-secondary');
-        }, 2000);
-      });
     });
 
     // Actions
@@ -730,95 +726,50 @@
       if (!currentPassword) return;
       try {
         const response = await fetch('/.netlify/functions/update-key-status', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ password: currentPassword, licenseId, newStatus })
         });
-        const data = await response.json();
-        if (response.ok && data.ok) {
-          await loadData();
-        } else {
-          alert(data.error || 'Failed to update status');
-        }
-      } catch (err) {
-        alert('Network error');
-      }
+        if (response.ok) { showToast('Status updated'); loadData(); }
+      } catch (err) { showToast('Error updating', 'times', 'var(--error)'); }
     };
 
     window.deleteKey = async function(licenseId, licenseKey) {
       if (!currentPassword) return;
-      if (!confirm(`Permanently delete key:\n${licenseKey}?`)) return;
+      if (!confirm(`Delete key:\n${licenseKey}?`)) return;
       try {
         const response = await fetch('/.netlify/functions/delete-key', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ password: currentPassword, licenseId })
         });
-        const data = await response.json();
-        if (response.ok && data.ok) {
-          await loadData();
-        } else {
-          alert(data.error || 'Failed to delete');
-        }
-      } catch (err) {
-        alert('Network error');
-      }
+        if (response.ok) { showToast('Key deleted'); loadData(); }
+      } catch (err) { }
     };
 
     window.deleteInactiveKeys = async function() {
       if (!currentPassword) return;
-      if (!confirm(`Are you sure you want to permanently delete all Paused (Revoked) and globally Expired keys?`)) return;
-      
+      if (!confirm(`Delete all Paused and Expired keys globally?`)) return;
       try {
         const response = await fetch('/.netlify/functions/delete-inactive-keys', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ password: currentPassword })
         });
-        const data = await response.json();
-        if (response.ok && data.ok) {
-          await loadData();
-        } else {
-          alert(data.error || 'Failed to clean up keys');
-        }
-      } catch (err) {
-        alert('Network error');
-      }
+        if (response.ok) { showToast('Cleanup successful'); loadData(); }
+      } catch (err) { }
     };
 
     window.deleteExpiredKeys = async function() {
       if (!currentPassword) return;
-      
-      const expiredIds = [];
-      globalLicenses.forEach(l => {
-        const info = getKeyInfo(l);
-        if (info.status === 'expired') {
-          expiredIds.push(l.id);
-        }
-      });
-      
-      if (expiredIds.length === 0) {
-        alert("No expired keys found.");
-        return;
-      }
-
-      if (!confirm(`Are you sure you want to permanently delete ${expiredIds.length} Expired key(s)?`)) return;
+      const expiredIds = globalLicenses.filter(l => getKeyInfo(l).status === 'expired').map(l => l.id);
+      if (expiredIds.length === 0) return showToast('No expired keys found', 'info-circle', 'var(--warning)');
+      if (!confirm(`Delete ${expiredIds.length} Expired key(s)?`)) return;
       
       try {
         const response = await fetch('/.netlify/functions/delete-inactive-keys', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ password: currentPassword, ids: expiredIds })
         });
-        const data = await response.json();
-        if (response.ok && data.ok) {
-          await loadData();
-        } else {
-          alert(data.error || 'Failed to clean up expired keys');
-        }
-      } catch (err) {
-        alert('Network error');
-      }
+        if (response.ok) { showToast(`${expiredIds.length} keys deleted`); loadData(); }
+      } catch (err) { }
     };
   </script>
 </body>
